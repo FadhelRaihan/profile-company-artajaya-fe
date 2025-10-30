@@ -1,17 +1,26 @@
-import React from "react";
+import { useEffect } from "react";
+import ParallaxPage from "@/components/paralaxPage";
+import Landing from "@/pages/LandingSection/main-landing"
+import VmLanding from "@/pages/LandingSection/vm-landing"
 import Loading from "@/components/loading";
 import Navbar from "@/components/navbar-profile";
 
-const Landing: React.FC = () => {
+export default function App() {
+  useEffect(() => {
+    // Aktifkan scroll snap secara global
+    document.documentElement.style.scrollSnapType = "y mandatory";
+  }, []);
+
   return (
     <Loading loadingDuration={2000}>
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        {/* <h1 className="text-4xl font-bold">Welcome to Home</h1>
-        <p>Ini adalah halaman home</p> */}
-      </div>
+      <ParallaxPage id="section1">
+        <Landing />
+      </ParallaxPage>
+
+      <ParallaxPage id="section2">
+        <VmLanding />
+      </ParallaxPage>
     </Loading>
   );
-};
-
-export default Landing;
+}
