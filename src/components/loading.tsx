@@ -14,7 +14,7 @@ const LoadingScreen = ({ progress }: { progress: number }) => {
           {/* Persentase Display */}
           <div className="text-center mb-2">
             <span className="text-4xl font-bold text-[#003399]">
-              {Math.round(progress)}%
+              {Math.round(progress)}
             </span>
           </div>
 
