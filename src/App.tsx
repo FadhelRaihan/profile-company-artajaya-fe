@@ -1,11 +1,19 @@
-import { Button } from "@/components/ui/button"
- 
+import { Routes, Route } from 'react-router-dom';
+import Landing from './pages/landing'
+
 function App() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button>Click me</Button>
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Landing />} />
+
+          {/* 404 Page */}
+          {/* <Route path="*" element={<NotFound />} /> */}
+        </Routes>
+      </main>
     </div>
-  )
+  );
 }
- 
-export default App
+
+export default App;
