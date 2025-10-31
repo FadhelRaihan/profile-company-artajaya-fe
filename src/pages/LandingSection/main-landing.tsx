@@ -1,48 +1,61 @@
-import React from "react";
-import Loading from "@/components/loading";
-import Navbar from "@/components/navbar-profile";
 
-const Landing: React.FC = () => {
-  return (
-    <Loading loadingDuration={2000}>
-      <div className="relative h-screen w-full overflow-hidden">
-        <Navbar />
+import { motion } from "framer-motion";
+import SplitText from "@/components/SplitText";
 
-        {/* Content Container - Centered Left */}
-        <div className="absolute left-56 top-1/2 -translate-y-1/2 max-w-5xl">
-          {/* Section: Welcome */}
-          <div className="text-blue-900 text-3xl font-medium mb-8">
-            / Selamat Datang di ArtaJaya
-          </div>
-
-          {/* Section: Headline */}
-          <div>
-            <span className="text-blue-900 text-9xl font-semibold leading-tight">
-              Konsultan{" "}
-            </span>
-            <span className="text-red-600 text-9xl font-semibold leading-tight">
-              Arsitektur
-            </span>
-            <span className="text-blue-900 text-9xl font-semibold leading-tight">
-              {" "}
-              dan{" "}
-            </span>
-            <span className="text-red-600 text-9xl font-semibold leading-tight">
-              Konstruksi
-            </span>
-            <span className="text-blue-900 text-9xl font-semibold leading-tight">
-              .
-            </span>
-          </div>
-        </div>
-
-        {/* Section: Scroll Indicator */}
-        <div className="absolute right-8 bottom-16 -translate-y-1/2 -rotate-90 text-blue-900 text-base font-medium">
-          SCROLL
-        </div>
-      </div>
-    </Loading>
-  );
+  const handleAnimationComplete = () => {
+  console.log('All letters have animated!');
 };
 
-export default Landing;
+const MainLanding = () => (
+  <div className="relative h-screen w-full flex items-center justify-center px-4 md:px-8 lg:px-16">
+    {/* Content Container */}
+    <div className="max-w-7xl w-full">
+      {/* Welcome Text */}
+      <SplitText
+        text="/Selamat Datang di ArtaJaya Konstruksi"
+        className="text-2xl font-semibold text-center text-blue-900"
+        delay={100}
+        duration={0.6}
+        ease="power3.out"
+        splitType="chars"
+        from={{ opacity: 0, y: 40 }}
+        to={{ opacity: 1, y: 0 }}
+        threshold={0.6}
+        rootMargin="-100px"
+        textAlign="center"
+        onLetterAnimationComplete={handleAnimationComplete}
+      >
+
+      </SplitText>
+
+      {/* Headline - Responsive Typography */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="text-center lg:text-left"
+      >
+        <h1 className="leading-tight">
+          <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-semibold text-blue-900">
+            Konsultan{" "}
+          </span>
+          <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-semibold text-red-600">
+            Arsitektur
+          </span>
+          <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-semibold text-blue-900">
+            dan{" "}
+          </span>
+          <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-semibold text-red-600">
+            Konstruksi
+            <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-semibold text-blue-900">
+              .
+            </span>
+          </span>
+        </h1>
+      </motion.div>
+    </div>
+  </div>
+);
+
+
+export default MainLanding;
