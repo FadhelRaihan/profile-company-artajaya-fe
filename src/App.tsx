@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Landing from './pages/landing'
+import Project from './pages/project';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
 
           {/* 404 Page */}
           {/* <Route path="*" element={<NotFound />} /> */}
+          <Route path="/project" element={<Project />} />
         </Routes>
       </main>
     </div>

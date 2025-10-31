@@ -20,7 +20,7 @@ const VmLanding: React.FC = () => {
           <h2 className="font-bold text-blue-700 text-4xl text-right tracking-wide leading-normal">
             MISI
           </h2>
-          <p className="font-normal text-blue-700 text-2xl text-right tracking-wide leading-relaxed text-justify">
+          <p className="font-normal text-blue-700 text-2xl text-right tracking-wide leading-relaxed ">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </p>
         </section>

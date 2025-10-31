@@ -35,5 +35,11 @@ export const projects: Project[] = [
     title: "Instalasi Penerangan Jalan Umum",
     description: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
     image: "https://picsum.photos/seed/lampu/400/300"
+  },
+  {
+    id: 6,
+    title: "Instalasi Penerangan Jalan Umum",
+    description: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    image: "https://picsum.photos/seed/lampu/400/300"
   }
 ];

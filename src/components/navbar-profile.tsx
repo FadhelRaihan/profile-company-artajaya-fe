@@ -13,8 +13,15 @@ import Icon from "../assets/icon.png";
 import { projects } from "../assets/data/projects";
 
 // Fungsi untuk mengambil 2 item acak dari array
-const getRandomProjects = (arr: any[], count: number) => {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+interface Project {
+  id: string | number;
+  image: string;
+  title: string;
+  description: string;
+}
+
+const getRandomProjects = (arr: Project[], count: number): Project[] => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random()) as Project[];
   return shuffled.slice(0, count);
 };
 
@@ -95,7 +102,7 @@ const Navbar = () => {
               <div className="flex flex-col gap-30">
                 <div className="flex flex-col gap-5">
                   <a
-                    href="#projects"
+                    href="/project"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={closeMenu}
                   >
