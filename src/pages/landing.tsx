@@ -6,6 +6,9 @@ import DescLanding from "./LandingSection/desc-landing";
 import Loading from "@/components/loading";
 import Navbar from "@/components/navbar-profile";
 import ProjectKami from "./project-kami"; 
+import Testimoni from "./testimoni";
+import TimKami from "./tim-kami";
+import Kontak from "./kontak";
 // Pindahkan ScrollIndicator ke sini
 const ScrollIndicator = () => {
   const [progress, setProgress] = useState(0);
@@ -32,11 +35,11 @@ const ScrollIndicator = () => {
 
   return (
     <div 
-      className={`fixed bottom-6 right-6 md:right-8 lg:right-12 flex flex-col items-center gap-2 md:gap-3 lg:gap-4 z-50 transition-opacity duration-300 ${
+      className={`fixed bottom-2 right-6 md:right-8 lg:right-12 flex flex-col items-center gap-2 md:gap-3 lg:gap-4 z-50 transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <span className="text-xs md:text-sm font-thin text-blue-900 -rotate-90 mb-6 md:mb-8 lg:mb-12">
+      <span className="text-xs md:text-sm font-thin text-blue-900 -rotate-90 mb-6 md:mb-8 lg:mb-2">
         Scroll
       </span>
       <div className="h-16 md:h-24 lg:h-32 w-1 bg-gray-200 rounded-full overflow-hidden -rotate-180 mb-8 md:mb-12 lg:mb-16">
@@ -74,6 +77,15 @@ export default function App() {
 
         <ParallaxPage id="section4">
         <ProjectKami />
+      </ParallaxPage>
+      <ParallaxPage id="section5">
+        <Testimoni />
+      </ParallaxPage>
+      <ParallaxPage id="section6">
+        <TimKami />
+      </ParallaxPage>
+      <ParallaxPage id="section7">
+        <Kontak />
       </ParallaxPage>
     </Loading>
   );
