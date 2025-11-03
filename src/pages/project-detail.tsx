@@ -98,7 +98,7 @@ const project: Project | undefined = projects.find(p => p.id === numericId);
                             </div>
                             <CardHeader>
                                 <CardTitle>{rp.title}</CardTitle>
-                                <CardDescription className='text-wrap text-gray-700'>{rp.description}</CardDescription>
+                                <CardDescription className='text-wrap text-gray-700 line-clamp-2'>{rp.description}</CardDescription>
                             </CardHeader>
                             <MoveRight size={24} className='text-blue-900 opacity-0 -translate-x-10 group-hover:opacity-100 group-hover:translate-x-0 group-active:scale-110 transition-all duration-300 ml-2 inline-block' />
                         </Card>
