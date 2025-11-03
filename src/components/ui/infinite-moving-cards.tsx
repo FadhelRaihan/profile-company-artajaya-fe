@@ -9,7 +9,7 @@ export const InfiniteMovingCards = ({
   speed = "fast",
   pauseOnHover = true,
   className,
-  fullWidth = false, // 🔥 Prop opsional
+  fullWidth = false, //
 }: {
   items: {
     image: string;

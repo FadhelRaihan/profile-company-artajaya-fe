@@ -46,11 +46,11 @@ const ProjectKami: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen flex flex-col">
       {/* Container untuk text - dengan padding */}
-      <div className="flex flex-col items-center justify-center px-8 pt-32 md:pt-48">
-        <div className="max-w-7xl w-full space-y-8 mb-16 md:mb-24 lg:mb-32">
+      <div className="flex flex-col items-center justify-center px-4 pt-32 md:pt-48">
+        <div className="max-w-7xl w-full  mb-16 md:mb-24 lg:mb-2 pt-8">
           {/* Judul kecil */}
           <SplitText
-            text="/Proyek Kami"
+            text="/ Proyek Kami"
             className="text-2xl font-medium text-center text-blue-900"
             onLetterAnimationComplete={handleAnimationComplete}
           />
@@ -63,10 +63,10 @@ const ProjectKami: React.FC = () => {
             className="text-center lg:text-left"
           >
             <div className="leading-tight">
-              <span className="block text-6xl sm:text-5xl md:text-6xl lg:text-8xl font-semibold text-blue-900">
+              <span className="block text-6xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-blue-900">
                 Dibalik <span className="text-red-600">Proyek</span>
               </span>
-              <span className="block text-6xl sm:text-5xl md:text-6xl lg:text-8xl font-semibold text-blue-900">
+              <span className="block text-6xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-blue-900">
                 Kami
               </span>
             </div>
@@ -80,7 +80,7 @@ const ProjectKami: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.1 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-        className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] pb-36"
+        className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] pb-36 pt-16"
       >
         <InfiniteMovingCards 
           items={projects} 
