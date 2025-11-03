@@ -21,7 +21,7 @@ const ScrollIndicator = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Optional: hide indicator when scrolled past first section
+  // Hide indicator when scrolled past first section
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -35,7 +35,7 @@ const ScrollIndicator = () => {
 
   return (
     <div 
-      className={`fixed bottom-2 right-6 md:right-8 lg:right-12 flex flex-col items-center gap-2 md:gap-3 lg:gap-4 z-50 transition-opacity duration-300 ${
+      className={`fixed bottom-1   right-6 md:right-8 lg:right-8 flex flex-col items-center gap-2 md:gap-3 lg:gap-4 z-50 transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >

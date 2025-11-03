@@ -50,7 +50,7 @@ const ProjectKami: React.FC = () => {
         <div className="max-w-7xl w-full  mb-16 md:mb-24 lg:mb-2 pt-8">
           {/* Judul kecil */}
           <SplitText
-            text="/Proyek Kami"
+            text="/ Proyek Kami"
             className="text-2xl font-medium text-center text-blue-900"
             onLetterAnimationComplete={handleAnimationComplete}
           />

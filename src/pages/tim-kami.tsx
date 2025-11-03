@@ -57,7 +57,7 @@ const TimKami: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-12 md:py-20">
+    <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-12 md:py-20 mt-18">
       {/* Container untuk text - centered */}
       <div className="flex flex-col items-start justify-center px-8 mb-8 md:mb-12 max-w-7xl w-full">
         <div className="w-full space-y-4">
@@ -92,7 +92,7 @@ const TimKami: React.FC = () => {
           delay: 0.4,
           ease: "easeOut",
         }}
-        viewport={{ once: true }} // animasi hanya sekali saat muncul di layar
+        viewport={{ once: true }} 
         className="w-full flex justify-center"
       >
         <ExpandedCard

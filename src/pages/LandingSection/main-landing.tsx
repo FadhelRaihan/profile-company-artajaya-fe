@@ -12,7 +12,7 @@ const MainLanding = () => (
     <div className="max-w-7xl w-full">
       {/* Welcome Text */}
       <SplitText
-        text="/Selamat Datang di ArtaJaya Konstruksi"
+        text="/ Selamat Datang di ArtaJaya Konstruksi"
         className="text-2xl font-medium text-center text-blue-900"
         delay={100}
         duration={0.6}
