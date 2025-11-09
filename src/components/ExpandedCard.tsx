@@ -127,25 +127,17 @@ const ExpandedCard: React.FC<ExpandedCardProps> = ({
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                 <div
                   className={`
-                    transition-all duration-300
-                    ${isActive ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}
+                    transition-all duration-500
+                    ${isActive ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}
                   `}
                 >
                   <p
-                    className={`
-                      text-white text-xs md:text-sm font-medium mb-1
-                      transition-all duration-300
-                      ${isActive ? 'opacity-100' : 'opacity-90'}
-                    `}
+                    className="text-white text-xs md:text-sm font-medium mb-1 transition-all duration-500"
                   >
                     {position}
                   </p>
                   <h2
-                    className={`
-                      text-white font-bold
-                      transition-all duration-300
-                      ${isActive ? 'text-xl md:text-2xl lg:text-3xl' : 'text-base md:text-lg'}
-                    `}
+                    className="text-white font-bold text-base md:text-lg transition-all duration-500"
                   >
                     {name}
                   </h2>

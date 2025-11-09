@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const VmLanding = () => {
   return (
-    <div className="relative min-h-screen w-full flex flex-col gap-12 items-center justify-center px-6 py-12 md:px-10 lg:px-20 xl:px-24">
+    <div className="relative min-h-screen w-full flex flex-col gap-12 items-center justify-center mt-10 px-4 py-12 md:px-8 lg:px-16 xl:px-24">
       {/* Visi - Slide from Left to Right */}
       <motion.div 
         initial={{ opacity: 0, x: -100 }}

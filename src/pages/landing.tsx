@@ -52,7 +52,7 @@ const ScrollIndicator = () => {
   );
 };
 
-export default function App() {
+const LandingPage: React.FC = () => {
   useEffect(() => {
     // Aktifkan scroll snap secara global
     document.documentElement.style.scrollSnapType = "y mandatory";
@@ -90,3 +90,5 @@ export default function App() {
     </Loading>
   );
 }
+
+export default LandingPage;

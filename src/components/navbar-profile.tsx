@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "./ui/card";
-import Icon from "../assets/icon.png";
+import Icon from '@/assets/icons/logo.png';
 import { projects } from "../assets/data/projects";
 
 // Fungsi untuk mengambil 2 item acak dari array

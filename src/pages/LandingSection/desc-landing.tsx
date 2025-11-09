@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const DescLanding = () => {
   return (
-    <div className="relative h-screen w-full flex items-center justify-center px-4 md:px-8 lg:px-16">
+    <div className="relative h-screen w-full flex items-center justify-center pt-16 px-4 md:px-8 lg:px-16">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
