@@ -32,7 +32,7 @@ export const projects: Project[] = [
     id: 4,
     title: "Pengaspalan Jalan Lingkungan",
     tipe: "Pembelanjaan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nisl felis, tincidunt eu tellus vel, finibus placerat orci. Donec sit amet pellentesque est, sit amet sodales nulla. In scelerisque, risus a sodales convallis, nisl justo ultrices nisl, eget tempor odio massa quis nulla. Aliquam dictum gravida molestie. Aenean eu suscipit leo, vel gravida odio. Morbi est urna, consequat in velit eget, pulvinar accumsan mi. Suspendisse id lorem ac ipsum tristique condimentum quis posuere augue. Duis sit amet pulvinar augue. Praesent condimentum dui diam, eget mollis velit porttitor quis. Vestibulum hendrerit laoreet mi scelerisque tincidunt. Duis fermentum, leo eu rhoncus molestie, lorem velit sodales nisi, vitae varius erat tellus ac odio. Quisque enim sapien, commodo a elementum sit amet, pellentesque at nulla. Praesent eu erat aliquam, interdum ante eget, ultricies erat. Duis malesuada turpis eu lacus pellentesque molestie. Pellentesque non ornare odio. Mauris mauris sapien, pharetra non tincidunt id, ultrices a sem.",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nisl felis, tincidunt eu tellus vel, finibus placerat orci. Donec sit amet pellentesque est, sit amet sodales nulla. In scelerisque, risus a sodales convallis, nisl justo ultrices nisl,",
     image: "https://picsum.photos/seed/jalan/400/300"
   },
   {

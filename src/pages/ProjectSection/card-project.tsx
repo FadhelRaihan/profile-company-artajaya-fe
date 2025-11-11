@@ -45,7 +45,7 @@ export default function CardProject() {
             heightClass = "h-[400px]"; 
           }
 
-          const detailUrl = `/projects/${project.id}`;
+          const detailUrl = `/project/${project.id}`;
 
           return (
             <div key={project.id} className={`${widthClass} mb-2`}>
