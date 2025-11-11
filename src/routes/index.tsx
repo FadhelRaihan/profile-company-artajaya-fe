@@ -1,8 +1,11 @@
+import { Component } from 'lucide-react';
 import { lazy } from 'react';
 
 const LandingPage = lazy(() => import('@/pages/landing'));
 const Login = lazy(() => import('@/pages/auth/login'));
-const Dashboard = lazy(() => import('@/pages/dashboard'));
+const MainProject = lazy(() => import('@/pages/ProjectSection/main-project'))
+const SubDetailProject = lazy(() => import('@/pages/ProjectSection/sub-detail-projects'))
+const ProjectPages = lazy(() => import('@/pages/project-pages'))
 
 const routes = [
   {
@@ -18,8 +21,16 @@ const routes = [
     Component: Login,
   },
   {
-    path: '/dashboard',
-    Component: Dashboard,
+    path: '/ProjectPages',
+    Component: ProjectPages,
+  },
+  {
+    path: '/MainProject',
+    Component: MainProject
+  },
+  {
+    path: '/project/:id',
+    Component: SubDetailProject
   }
 ];
 

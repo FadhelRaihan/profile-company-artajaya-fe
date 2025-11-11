@@ -19,7 +19,7 @@ const Kontak: React.FC = () => {
       <div className="flex flex-col items-start justify-start mb-6 mt-36">
         {/* Headline kecil */}
         <SplitText
-          text="/ Kontak"
+          text="/ Kontak Kami"
           className="text-xl md:text-2xl font-medium text-blue-900"
           onLetterAnimationComplete={handleAnimationComplete}
         />

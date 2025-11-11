@@ -10,7 +10,7 @@ import {
   CardDescription,
 } from "./ui/card";
 import Icon from '@/assets/icons/logo.png';
-import { projects } from "../assets/data/projects";
+import { projectsData } from "../assets/data/projects";
 
 // Fungsi untuk mengambil 2 item acak dari array
 interface Project {
@@ -31,7 +31,7 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
 
-  const randomProjects = getRandomProjects(projects, 2);
+  const randomProjects = getRandomProjects(projectsData, 2);
 
   const menuVariants = {
     closed: {
@@ -51,6 +51,14 @@ const Navbar = () => {
       },
     },
   };
+
+  const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+  closeMenu();
+};
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-between items-center md:px-32 md:py-8">
@@ -98,44 +106,42 @@ const Navbar = () => {
               </div>
             </div>
 
-            <div className="mt-16 flex flex-row px-8 ml-15 items-center justify-between gap-8 text-[#00297A] md:px-32">
+            <div className="flex flex-row px-12 p-4 items-start justify-between gap-8 text-[#00297A] md:px-32 md:mt-8">
               <div className="flex flex-col gap-30">
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 m-6">
                   <a
-                    href="/project"
+                    href="/ProjectPages"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={closeMenu}
                   >
                     Projects
                   </a>
                   <a
-                    href="#about"
+                    href="/about"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={closeMenu}
                   >
-                    Tentang Kami
+                    Tentang  Kami
                   </a>
-                  <a
-                    href="#team"
-                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
-                    onClick={closeMenu}
+                  <button
+                    onClick={() => scrollToSection('section6')}
+                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition text-left"
                   >
                     Tim Kami
-                  </a>
-                  <a
-                    href="#contact"
-                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
-                    onClick={closeMenu}
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('section7')}
+                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition text-left"
                   >
                     Kontak Kami
-                  </a>
+                  </button>
                 </div>
 
                 <div className="flex items-center justify-start gap-10 text-[#000000]">
                   <a href="www.instagram.com">
                     <Instagram />
                   </a>
-                  <h1 className="text-xl md:text-2xl">Indonesia Bandung</h1>
+                  <h1 className="text-xl md:text-2xl mt-2">Indonesia Bandung</h1>
                 </div>
               </div>
 
