@@ -4,7 +4,7 @@ import SplitText from "@/components/SplitText";
 import React, { useEffect, useState, useRef } from "react";
 import Navbar from "@/components/navbar-profile";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { projectsData } from "@/assets/data/projects";
+import { projectsData } from "@/assets/data/projects"
 
 interface BentoItem {
   title: string;
@@ -51,18 +51,18 @@ const KegiatanKami: React.FC = () => {
         header: (
           <div
             data-index={index}
-            className="relative h-full w-full overflow-hidden bg-gray-100"
+            className="relative h-full w-full overflow-hidden"
           >
             {visibleItems.has(index) ? (
               <>
                 <img
                   src={project.image.trim()}
                   alt={project.title}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full transition-transform duration-300 group-hover/bento:scale-110"
                   loading="lazy"
                 />
                 {/* Gradient overlay dengan warna #FFFFFF00 (transparent) ke #003399 */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#003399] via-[#003399]/70 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#003399] via-[#003399]/5 to-transparent" />
                 
                 {/* Title dan Description di dalam gambar */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
@@ -109,16 +109,19 @@ const KegiatanKami: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center overflow-hidden py-12 md:py-20">
+    <div className="relative w-full min-h-screen flex flex-col items-center overflow-hidden py-12 md:py-24 mt-10 pl-8">
       <Navbar />
-      <div className="flex flex-col items-end justify-start px-4 md:px-24 mb-8 md:mb-12 max-w-7xl w-full mt-8">
+      {/* Container untuk text - centered horizontally */}
+      <div className="flex flex-col items-end justify-start px-4 md:px-24 mb-8 md:mb-12 max-w-7xl w-full">
         <div className="w-full space-y-4">
+          {/* Judul kecil */}
           <SplitText
             text="/ Kegiatan Kami"
             className="text-xl md:text-2xl font-medium text-blue-900"
             onLetterAnimationComplete={handleAnimationComplete}
           />
 
+          {/* Headline utama */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -133,26 +136,14 @@ const KegiatanKami: React.FC = () => {
           </motion.div>
         </div>
 
+        {/* BentoGrid menggunakan data proyek */}
         <BentoGrid className="max-w-6xl mx-auto mt-12">
           {items.map((item, i) => (
-            <motion.div
+            <BentoGridItem
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.5, 
-                delay: i * 0.1,
-                ease: "easeOut" 
-              }}
-              viewport={{ once: true, margin: "-50px" }}
-            >
-              <BentoGridItem
-                title={null}
-                description={null}
-                header={item.header}
-                className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-              />
-            </motion.div>
+              header={item.header}
+              className={i === 3 || i === 6 ? "md:col-span-2 " : " "}
+            />
           ))}
         </BentoGrid>
       </div>
