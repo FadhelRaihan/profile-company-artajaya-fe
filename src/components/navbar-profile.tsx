@@ -1,5 +1,6 @@
 // src/components/navbar.tsx
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Instagram } from "lucide-react";
 import {
@@ -69,10 +70,12 @@ const Navbar = () => {
         />
       </div>
 
-      <div className="flex items-center">
-        <div className="w-full h-full px-5 py-2 bg-red-600 text-white flex items-center justify-center font-bold">
-          <img src={Icon} alt="icon" className="w-[30px]" />
-        </div>
+     <div className="flex items-center">
+        <Link to="/landing" onClick={closeMenu}>
+          <div className="w-full h-full px-5 py-2 bg-red-600 text-white flex items-center justify-center font-bold cursor-pointer">
+            <img src={Icon} alt="icon" className="w-[30px]" />
+          </div>
+        </Link>
       </div>
 
       {isOpen && (

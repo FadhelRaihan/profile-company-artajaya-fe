@@ -1,499 +1,330 @@
 "use client";
+
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router-dom";
+import { projectsData } from "@/assets/data/projects";
+import { ArrowLeft, Phone } from "lucide-react";
+import Navbar from "@/components/navbar-profile";
+import { Separator } from "@/components/ui/separator";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useNavigate, useParams } from "react-router-dom";
-import { projectsData } from "@/assets/data/projects";
-import {
-  ArrowLeft,
-  MapPin,
-  Calendar,
-  User,
-  Clock,
-  DollarSign,
-  CheckCircle2,
-  Building2,
-  Phone,
-  Mail,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { useInView } from 'react-intersection-observer';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const SubDetailProject: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const projectId = Number(id);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Cari project berdasarkan ID
+  // Variants for animation
+  const fadeInUp= {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0,
+    transition: { 
+      type: "spring",
+       stiffness: 60,
+       damping: 12,
+       duration: 0.7, 
+       delay: 0.1,
+       },
+      },
+  } as any
+
+  // Refs for lazy-load + animation
+  const [titleRef, titleInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [carouselRef, carouselInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [infoRef, infoInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [aboutRef, aboutInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [navRef, navInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [ctaRef, ctaInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [relatedRef, relatedInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+
   const project = projectsData.find((p) => p.id === projectId);
 
-  // Jika project tidak ditemukan
   if (!project) {
     return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 text[#003399]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <div className="w-32 h-32 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
-            <Building2 className="w-16 h-16 text-blue-400" />
-          </div>
-          <h1 className="text-4xl font-bold text-blue-900 mb-4">
+      <div className="w-full min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-[#003399] mb-4">
             Project Tidak Ditemukan
           </h1>
-          <p className="text-blue-600 mb-8">
-            Maaf, project yang Anda cari tidak tersedia.
-          </p>
           <Button
             onClick={() => navigate("/project")}
-            className="bg-blue-900 hover:bg-blue-800"
+            className="bg-[#003399] hover:bg-[#002266]"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Kembali ke Daftar Project
           </Button>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
-  const handleBack = () => {
-    navigate("/project");
-  };
-
-  // Animation variants
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Hero Section with Background */}
-      <div className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white pt-24 pb-12 px-4 md:px-8 lg:px-16">
-        <div className="max-w-7xl mx-auto">
-          {/* Tombol Kembali */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <Button
-              onClick={handleBack}
-              variant="outline"
-              className="gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Kembali
-            </Button>
-          </motion.div>
-
-          {/* Header Project */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-              <span
-                className={`px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm ${
-                  project.status === "completed"
-                    ? "bg-green-500/90 text-white"
-                    : project.status === "ongoing"
-                    ? "bg-yellow-500/90 text-white"
-                    : "bg-blue-500/90 text-white"
-                }`}
-              >
-                {project.status === "completed"
-                  ? "✓ Selesai"
-                  : project.status === "ongoing"
-                  ? "⚡ Sedang Berjalan"
-                  : "📋 Direncanakan"}
-              </span>
-              <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium">
-                {project.category}
-              </span>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              {project.title}
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-6">
-              {project.subtitle}
-            </p>
-
-            {/* Quick Info */}
-            <div className="flex flex-wrap gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                <span>{project.location}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                <span>{project.year}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                <span className="font-semibold">{project.value}</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Decorative Wave */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg
-            viewBox="0 0 1440 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full"
-          >
-            <path
-              d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z"
-              fill="rgb(239 246 255)"
-            />
-          </svg>
-        </div>
+    <div className="w-full min-h-screen bg-white">
+      {/* Fixed Navbar */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Navbar />
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 -mt-8 pb-16">
-        {/* Carousel Gambar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mb-16"
+      {/* Back Button - separate from Navbar, hidden on mobile */}
+        <button
+          onClick={() => {
+            console.log("Back clicked");
+            navigate("/ProjectPages");
+          }}
+          className="hidden md:block fixed top-8 left-[55px] z-[60] p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer"
+          aria-label="Kembali ke Projects"
         >
-          <Card className="overflow-hidden shadow-2xl border-none">
-            <CardContent className="p-0">
-              <Carousel className="w-full">
-                <CarouselContent>
+          <ArrowLeft className="text-[#00297A] size-[30px]" />
+        </button>
+
+      {/* Main Content with top padding to avoid overlap with fixed navbar */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 pt-[72px] mr-8 mt-12">
+        
+        {/* Title */}
+        <div ref={titleRef}>
+          {titleInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-8 mt-8 leading-tight">
+                {project.title}
+              </h1>
+              <Separator className="my-4 h-1 bg-gray-700" />
+            </motion.div>
+          )}
+        </div>
+
+        {/* Carousel */}
+        <div ref={carouselRef} className="relative mb-12">
+          {carouselInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <Carousel
+                opts={{ align: "start" }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-0">
                   {project.images.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="relative w-full h-[400px] md:h-[600px] overflow-hidden">
+                    <CarouselItem key={index} className="pl-0 basis-full">
+                      <div className="relative w-full h-[350px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-lg">
                         <img
                           src={image}
                           alt={`${project.title} - Image ${index + 1}`}
-                          className="object-cover w-full h-full hover:scale-105 transition-transform duration-700"
+                          className="w-full h-full object-cover"
                         />
-                        {/* Image Counter */}
-                        <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
+                        <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
                           {index + 1} / {project.images.length}
                         </div>
                       </div>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="left-4" />
-                <CarouselNext className="right-4" />
               </Carousel>
-            </CardContent>
-          </Card>
-        </motion.div>
+            </motion.div>
+          )}
+        </div>
 
-        {/* Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-16">
-          {/* Left Column - Project Info Cards */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="lg:col-span-1 space-y-6"
-          >
-            {/* Info Card */}
-            <motion.div variants={fadeInUp}>
-              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-blue-900 mb-6 flex items-center gap-2">
-                    <Building2 className="h-5 w-5 text-blue-600" />
-                    Informasi Project
-                  </h3>
-                  <div className="space-y-5">
-                    <div className="flex items-start gap-3 group">
-                      <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                        <MapPin className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-blue-900 mb-1">
-                          Lokasi
-                        </p>
-                        <p className="text-sm text-blue-700">
-                          {project.location}
-                        </p>
-                      </div>
+        {/* Info Section */}
+        <div ref={infoRef} className="mb-12">
+          {infoInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold text-[#003399] mb-6">
+                Info
+              </h2>
+              <div className="space-y-4 border-t border-gray-200">
+                {[
+                  { label: "Klien", value: project.client },
+                  { label: "Industri", value: project.category },
+                  { label: "Pelayanan", value: project.category },
+                  { label: "Lokasi", value: project.location }
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col md:flex-row border-b border-gray-200 py-4"
+                  >
+                    <div className="w-full md:w-1/3 text-[#003399] font-semibold mb-2 md:mb-0">
+                      {item.label}
                     </div>
-
-                    <div className="flex items-start gap-3 group">
-                      <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                        <Calendar className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-blue-900 mb-1">
-                          Tahun Pengerjaan
-                        </p>
-                        <p className="text-sm text-blue-700">{project.year}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 group">
-                      <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-blue-900 mb-1">
-                          Klien
-                        </p>
-                        <p className="text-sm text-blue-700">
-                          {project.client}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 group">
-                      <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                        <Clock className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-blue-900 mb-1">
-                          Durasi Pengerjaan
-                        </p>
-                        <p className="text-sm text-blue-700">
-                          {project.duration}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 group">
-                      <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
-                        <DollarSign className="h-5 w-5 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-blue-900 mb-1">
-                          Nilai Project
-                        </p>
-                        <p className="text-lg font-bold text-green-600">
-                          {project.value}
-                        </p>
-                      </div>
+                    <div className="w-full md:w-2/3 text-gray-700 text-right">
+                      {item.value}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                ))}
+              </div>
             </motion.div>
+          )}
+        </div>
 
-            {/* Status Card */}
-            <motion.div variants={fadeInUp}>
-              <Card className="border-none shadow-lg bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-bold mb-4">Status Project</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Progress</span>
-                      <span className="font-bold">
-                        {project.status === "completed"
-                          ? "100%"
-                          : project.status === "ongoing"
-                          ? "65%"
-                          : "0%"}
-                      </span>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-3 overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{
-                          width:
-                            project.status === "completed"
-                              ? "100%"
-                              : project.status === "ongoing"
-                              ? "65%"
-                              : "0%",
-                        }}
-                        transition={{ duration: 1, delay: 0.5 }}
-                        className="bg-white h-full rounded-full"
-                      />
-                    </div>
-                    <p className="text-sm text-blue-100 mt-4">
-                      {project.status === "completed"
-                        ? "Project telah selesai dan diserahterimakan kepada klien."
-                        : project.status === "ongoing"
-                        ? "Project sedang dalam tahap pengerjaan aktif."
-                        : "Project sedang dalam tahap perencanaan."}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+        {/* About Section */}
+        <div ref={aboutRef} className="mb-16">
+          {aboutInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <h2 className="text-2xl md:text-3xl font-medium text-[#003399] mb-6">
+                About
+              </h2>
+              <Separator className="my-10 h-1 bg-gray-700" />
+              <div className="text-gray-600 leading-relaxed text-justify">
+                {project.description.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4">{paragraph}</p>
+                ))}
+              </div>
+              <Separator className="my-8 h-1 bg-gray-700" />
             </motion.div>
-          </motion.div>
+          )}
+        </div>
 
-          {/* Right Column - Description & Features */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="lg:col-span-2 space-y-8"
-          >
-            {/* Deskripsi */}
-            <motion.div variants={fadeInUp}>
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-8">
-                  <h2 className="text-3xl font-bold text-blue-900 mb-6">
-                    Deskripsi Project
-                  </h2>
-                  <p className="text-blue-700 leading-relaxed text-lg">
-                    {project.description}
-                  </p>
-                </CardContent>
-              </Card>
+        {/* Navigation Buttons */}
+        <div ref={navRef} className="mb-16 py-8">
+          {navInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+              className="flex justify-between items-center"
+            >
+              <button
+                onClick={() => {
+                  const prevId = projectId > 1 ? projectId - 1 : projectsData.length;
+                  navigate(`/project/${prevId}`);
+                }}
+                className="text-[#003399] hover:text-[#002266] font-semibold text-lg flex items-center gap-2 transition-colors underline"
+              >
+                ← Project Sebelumnya
+              </button>
+              <button
+                onClick={() => {
+                  const nextId = projectId < projectsData.length ? projectId + 1 : 1;
+                  navigate(`/project/${nextId}`);
+                }}
+                className="text-[#003399] hover:text-[#002266] font-semibold text-lg flex items-center gap-2 transition-colors underline"
+              >
+                Project Selanjutnya →
+              </button>
             </motion.div>
-
-            {/* Fitur & Spesifikasi */}
-            <motion.div variants={fadeInUp}>
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-8">
-                  <h2 className="text-3xl font-bold text-blue-900 mb-6">
-                    Fitur & Spesifikasi
-                  </h2>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {project.features.map((feature, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * index }}
-                        className="flex items-start gap-3 p-4 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors group"
-                      >
-                        <CheckCircle2 className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                        <span className="text-blue-900 leading-relaxed">
-                          {feature}
-                        </span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </motion.div>
+          )}
         </div>
 
         {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <Card className="border-none shadow-2xl bg-gradient-to-r from-red-600 to-red-700 text-white overflow-hidden relative">
-            <CardContent className="p-12 text-center relative z-10">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full translate-y-1/2 -translate-x-1/2" />
-              </div>
-
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="relative z-10"
+        <div ref={ctaRef} className="text-center mb-16 py-16 rounded-3xl">
+          {ctaInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                <span className="text-[#003399]">Mulai Membuat</span>
+                <br />
+                <span className="text-[#DC2626]">Project?</span>
+              </h2>
+              <Button
+                size="lg"
+                className="mt-6 text-[#003399] font-semibold px-8 py-6 text-lg 
+                items-center
+                hover:bg-[#003399] hover:text-white
+                transition-colors duration-300"
+                onClick={() => navigate("/Kontak")}
+                variant={"outline"}
               >
-                <h3 className="text-3xl md:text-4xl font-bold mb-4">
-                  Tertarik dengan Project Serupa?
-                </h3>
-                <p className="text-lg text-red-100 mb-8 max-w-2xl mx-auto">
-                  Hubungi kami untuk konsultasi project konstruksi Anda.
-                  <br />
-                  Tim profesional ArtaJaya siap membantu mewujudkan project
-                  impian Anda.
-                </p>
+                Hubungi Kami <Phone/>
+              </Button>
+            </motion.div>
+          )}
+        </div>
 
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <Button
-                    size="lg"
-                    className="bg-white text-red-600 hover:bg-red-50 font-semibold px-8 py-6 text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
-                  >
-                    <Phone className="mr-2 h-5 w-5" />
-                    Hubungi Kami
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-red-600 font-semibold px-8 py-6 text-lg transition-all duration-300"
-                  >
-                    <Mail className="mr-2 h-5 w-5" />
-                    Kirim Email
-                  </Button>
-                </div>
-              </motion.div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Related Projects Preview */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-16"
-        >
-          <h3 className="text-2xl font-bold text-blue-900 mb-6 text-center">
-            Project Lainnya
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            {projectsData
-              .filter((p) => p.id !== projectId)
-              .slice(0, 3)
-              .map((relatedProject, index) => (
-                <motion.div
-                  key={relatedProject.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1 + index * 0.1 }}
-                >
-                  <Card
-                    className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
-                    onClick={() => navigate(`/project/${relatedProject.id}`)}
-                  >
-                    <CardContent className="p-0">
-                      <div className="relative h-48 overflow-hidden">
+        {/* Related Projects */}
+        <div ref={relatedRef} className="mb-12">
+          {relatedInView && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <h2 className="text-2xl md:text-3xl font-medium text-[#003399] mb-2">
+                Related Project
+              </h2>
+              <Separator className="my-4 h-1 bg-gray-700" />
+              <div className="grid md:grid-cols-2 gap-6">
+                {projectsData
+                  .filter((p) => p.id !== projectId)
+                  .slice(0, 2)
+                  .map((relatedProject) => (
+                    <div
+                      key={relatedProject.id}
+                      className="group cursor-pointer"
+                      onClick={() => {
+                        navigate(`/project/${relatedProject.id}`);
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      <div className="relative h-[300px] md:h-[400px] rounded-none overflow-hidden shadow-lg mb-4">
                         <img
                           src={relatedProject.image}
                           alt={relatedProject.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                          <h4 className="font-bold text-lg mb-1">
-                            {relatedProject.title}
-                          </h4>
-                          <p className="text-sm text-white/90">
-                            {relatedProject.subtitle}
-                          </p>
-                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-          </div>
-        </motion.div>
+                      <h3 className="text-xl font-medium text-[#003399] group-hover:text-[#002266] transition-colors">
+                        {relatedProject.title}
+                      </h3>
+                    </div>
+                  ))}
+              </div>
+            </motion.div>
+          )}
+        </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.div
+            key="scroll-top"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-6 right-6 z-50"
+          >
+            <Button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-[#003399] text-white p-3 rounded-full shadow-lg hover:bg-[#002266] transition-colors"
+              aria-label="Scroll to top"
+            >
+              ↑
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

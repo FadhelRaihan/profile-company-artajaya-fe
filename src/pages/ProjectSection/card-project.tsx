@@ -1,10 +1,10 @@
-// CardProject Component
-// import React from "react";
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { projects } from "@/assets/data/projects";
-import { MoveRight } from 'lucide-react';
-import {motion} from "framer-motion";
+import { projectsData } from "@/assets/data/projects";
+import { MoveRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
 
 interface Project {
   id: string | number;
@@ -14,35 +14,66 @@ interface Project {
 }
 
 export default function CardProject() {
-  const getRandomProjects = (arr: Project[], count: number) => {
-    const shuffled = [...arr].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+  const [visibleCount, setVisibleCount] = useState(3); // tampilkan 3 data awal
+  const [data, setData] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch atau ambil data lokal
+  useEffect(() => {
+    // Bisa diganti dengan fetch() API bila kamu ingin ambil data dari backend
+    setData(projectsData);
+  }, []);
+
+  // Intersection observer untuk trigger load berikutnya
+  const { ref, inView } = useInView({
+    threshold: 0.3, // akan trigger saat 30% elemen terlihat
+    triggerOnce: false,
+  });
+
+  useEffect(() => {
+    if (inView && !loading && visibleCount < data.length) {
+      setLoading(true);
+      // Simulasi delay fetching data (misalnya 800ms)
+      setTimeout(() => {
+        setVisibleCount((prev) => prev + 3); // tampilkan 3 lagi
+        setLoading(false);
+      }, 800);
+    }
+  }, [inView, loading, data.length, visibleCount]);
+
+  const visibleProjects = data.slice(0, visibleCount);
+
+  //Animate untuk card
+  const cardVariants = {
+     hidden: { opacity: 0, y: 50 },
+    visible: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: "easeOut",
+      },
+    }),
   };
 
-  // Ambil cukup banyak project untuk melihat pola (misalnya 12 untuk 2 set pola 6)
-  const randomProjects = getRandomProjects(projects, 6);
+  //skelton shimmer
 
   return (
-    // Gunakan flexbox seperti .ce_projects
-
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="text-center lg:text-left"
-    
-    
     >
-      <div className="flex flex-wrap justify-between max-w-6xl mx-auto gap-6" style={{ '--base': '1rem' } as React.CSSProperties}> 
-        {randomProjects.map((project, index) => {
-          // Tentukan lebar berdasarkan pola 6n dari CSS
-          let widthClass = "basis-[calc(25%-var(--base))]"; // Default 1/4 lebar (menyesuaikan gap)
-          let heightClass = "h-[200px]"; // Default tinggi kecil
+      <div className="flex flex-wrap justify-between max-w-6xl mx-auto gap-6 mt-8">
+        {visibleProjects.map((project, index) => {
+          let widthClass = "basis-[calc(25%-1rem)]";
+          let heightClass = "h-[200px]";
 
-          // Cocokkan dengan pola CSS: 6n+1, 6n+3, 6n+5, 6n+6 -> 1/4 (kecil), 6n+2, 6n+4 -> 1/2 (besar)
-          if (index % 6 === 1 || index % 6 === 3) { 
-            widthClass = "basis-[calc(50%-var(--base))]"; 
-            heightClass = "h-[400px]"; 
+          if (index % 6 === 1 || index % 6 === 3) {
+            widthClass = "basis-[calc(50%-1rem)]";
+            heightClass = "h-[400px]";
           }
 
           const detailUrl = `/project/${project.id}`;
@@ -56,6 +87,7 @@ export default function CardProject() {
                       src={project.image}
                       alt={project.title}
                       className={`w-full object-cover ${heightClass} transition-transform duration-300 hover:scale-110`}
+                      loading="lazy"
                     />
                   </div>
 
@@ -64,7 +96,10 @@ export default function CardProject() {
                     <CardDescription className="text-[16px] text-blue-900 px-2 pt-3 text-ellipsis overflow-hidden h-16">
                       {project.description}
                     </CardDescription>
-                    <MoveRight size={24} className="text-blue-900 opacity-100 -translate-x-10 group-hover:opacity-100 group-hover:translate-x-0 group-active:scale-110 transition-all duration-300 ml-2 inline-block" />
+                    <MoveRight
+                      size={24}
+                      className="text-blue-900 opacity-100 -translate-x-10 group-hover:opacity-100 group-hover:translate-x-0 group-active:scale-110 transition-all duration-300 ml-2 inline-block"
+                    />
                   </CardHeader>
                 </Card>
               </Link>
@@ -72,6 +107,17 @@ export default function CardProject() {
           );
         })}
       </div>
+
+      {/* Observer sentinel */}
+      {visibleCount < data.length && (
+        <div ref={ref} className="flex justify-center items-center py-6">
+          {loading ? (
+            <span className="text-gray-600 animate-pulse">Memuat project lain...</span>
+          ) : (
+            <span className="text-blue-500">Scroll untuk melihat lebih banyak ↓</span>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }

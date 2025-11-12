@@ -6,6 +6,7 @@ const Login = lazy(() => import('@/pages/auth/login'));
 const MainProject = lazy(() => import('@/pages/ProjectSection/main-project'))
 const SubDetailProject = lazy(() => import('@/pages/ProjectSection/sub-detail-projects'))
 const ProjectPages = lazy(() => import('@/pages/project-pages'))
+const KegiatanKami = lazy(() => import('@/pages/kegiatan-kami-section'))
 
 const routes = [
   {
@@ -31,6 +32,10 @@ const routes = [
   {
     path: '/project/:id',
     Component: SubDetailProject
+  },
+  {
+    path: '/KegiatanKami',
+    Component: KegiatanKami
   }
 ];
 
