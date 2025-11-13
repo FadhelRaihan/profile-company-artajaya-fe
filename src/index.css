@@ -139,6 +139,13 @@ section {
     @apply bg-background text-foreground;
   }
  @keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+
   0% {
     transform: translateX(0);
   }
@@ -160,6 +167,16 @@ section {
 
 .hover\:paused:hover {
   animation-play-state: paused;
+}
+
+.animate-scroll > li {
+  pointer-events: auto;
+}
+/* Scale-up efek smooth */
+.animate-scroll > li:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  transition: transform 0.3s ease-in-out;
 }
 
 }

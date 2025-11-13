@@ -7,9 +7,8 @@ export const InfiniteMovingCards = ({
   items,
   direction = "left",
   speed = "fast",
-  pauseOnHover = true,
   className,
-  fullWidth = false, //
+  fullWidth = false,
 }: {
   items: {
     image: string;
@@ -34,16 +33,11 @@ export const InfiniteMovingCards = ({
   function addAnimation() {
     if (containerRef.current && scrollerRef.current) {
       const scrollerContent = Array.from(scrollerRef.current.children);
-       if (scrollerRef.current.children.length === scrollerContent.length) {
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        scrollerRef.current?.appendChild(duplicatedItem);
-      });
-    }
 
+      // Gandakan konten untuk efek infinite scroll
       scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        scrollerRef.current?.appendChild(duplicatedItem);
+        const duplicated = item.cloneNode(true);
+        scrollerRef.current?.appendChild(duplicated);
       });
 
       getDirection();
@@ -87,14 +81,13 @@ export const InfiniteMovingCards = ({
         ref={scrollerRef}
         className={cn(
           "flex w-max min-w-screen shrink-0 flex-nowrap gap-6",
-          start && "animate-scroll",
-          pauseOnHover && "hover:paused"
+          start && "animate-scroll"
         )}
       >
         {items.map((item, idx) => (
           <li
             key={idx}
-            className="relative w-[350px] md:w-[450px] shrink-0 overflow-hidden rounded-none"
+            className="relative w-[350px] md:w-[450px] shrink-0 overflow-hidden rounded-xl bg-white dark:bg-card shadow-md"
           >
             <img
               src={item.image}

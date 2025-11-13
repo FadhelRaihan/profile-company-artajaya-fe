@@ -1,5 +1,5 @@
-// src/components/navbar.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Instagram } from "lucide-react";
 import {
@@ -10,7 +10,7 @@ import {
   CardDescription,
 } from "./ui/card";
 import Icon from '@/assets/icons/logo.png';
-import { projects } from "../assets/data/projects";
+import { projectsData } from "../assets/data/projects";
 
 // Fungsi untuk mengambil 2 item acak dari array
 interface Project {
@@ -25,20 +25,12 @@ const getRandomProjects = (arr: Project[], count: number): Project[] => {
   return shuffled.slice(0, count);
 };
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const closeMenu = () => setIsOpen(false);
-
-  const randomProjects = getRandomProjects(projects, 2);
-
   const menuVariants = {
     closed: {
       y: "-100%",
       opacity: 0,
       transition: {
-        duration: 1,
+        duration: 0.6,
         ease: "easeInOut" as const,
       },
     },
@@ -46,15 +38,53 @@ const Navbar = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 0.6,
         ease: "easeOut" as const,
       },
     },
   };
 
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
+
+  const randomProjects = getRandomProjects(projectsData, 2);
+
+  // Deteksi scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+  closeMenu();
+};
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-between items-center md:px-32 md:py-8">
-      <div className="bg-white p-2 rounded-xl">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-between items-center md:px-32 md:py-4 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/10 backdrop-blur-md border border-white/5 rounded-xl shadow-sm"
+          : "bg-transparent"
+      }`}
+    >
+      {/* Isi navbar tetap sama */}
+      <div className="p-2 rounded-xl">
         <Menu
           onClick={toggleMenu}
           className="text-[#00297A] size-[30px] focus:outline-none z-50 cursor-pointer"
@@ -62,9 +92,11 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center">
-        <div className="w-full h-full px-5 py-2 bg-red-600 text-white flex items-center justify-center font-bold">
-          <img src={Icon} alt="icon" className="w-[30px]" />
-        </div>
+        <Link to="/landing" onClick={closeMenu}>
+          <div className="w-full h-full px-5 py-2 bg-red-600 text-white flex items-center justify-center font-bold cursor-pointer">
+            <img src={Icon} alt="icon" className="w-[30px]" />
+          </div>
+        </Link>
       </div>
 
       {isOpen && (
@@ -98,44 +130,42 @@ const Navbar = () => {
               </div>
             </div>
 
-            <div className="mt-16 flex flex-row px-8 ml-15 items-center justify-between gap-8 text-[#00297A] md:px-32">
+            <div className="flex flex-row px-12 p-4 items-start justify-between gap-8 text-[#00297A] md:px-32 md:mt-8">
               <div className="flex flex-col gap-30">
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 m-6">
                   <a
-                    href="/project"
+                    href="/ProjectPages"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={closeMenu}
                   >
                     Projects
                   </a>
                   <a
-                    href="#about"
+                    href="/about"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={closeMenu}
                   >
-                    Tentang Kami
+                    Tentang  Kami
                   </a>
-                  <a
-                    href="#team"
-                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
-                    onClick={closeMenu}
+                  <button
+                    onClick={() => scrollToSection('section6')}
+                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition text-left"
                   >
                     Tim Kami
-                  </a>
-                  <a
-                    href="#contact"
-                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
-                    onClick={closeMenu}
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('section7')}
+                    className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition text-left"
                   >
                     Kontak Kami
-                  </a>
+                  </button>
                 </div>
 
                 <div className="flex items-center justify-start gap-10 text-[#000000]">
                   <a href="www.instagram.com">
                     <Instagram />
                   </a>
-                  <h1 className="text-xl md:text-2xl">Indonesia Bandung</h1>
+                  <h1 className="text-xl md:text-2xl mt-2">Indonesia Bandung</h1>
                 </div>
               </div>
 

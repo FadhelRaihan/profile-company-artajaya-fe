@@ -1,46 +1,45 @@
-import React from "react";
-import SplitText from "@/components/SplitText"; // Pastikan path benar
+"use client";
 import { motion } from "framer-motion";
-
-const handleAnimationComplete = () => {
-  console.log('All letters have animated!');
-};
+import SplitText from "@/components/SplitText";
+import React from "react";
 
 const MainProject: React.FC = () => {
-    return(
-        <div className="max-w-5xl">
-        <div className="text-blue-900 text-3xl font-medium">
-            <SplitText
-                text="/ Project Kami"
-                className="text-2xl font-semibold text-center text-blue-900"
-                delay={100} // Delay antar karakter dalam stagger
-                duration={0.6}
-                ease="power3.out"
-                splitType="chars"
-                from={{ opacity: 0, y: 40 }}
-                to={{ opacity: 1, y: 0 }}
-                // Hapus threshold dan rootMargin karena tidak digunakan jika triggerOnMount=true
-                triggerOnMount={true} // Tambahkan prop ini
-                mountDelay={0} // Delay sebelum animasi mulai (opsional)
-                textAlign="center"
-                onLetterAnimationComplete={handleAnimationComplete}
-            >
-            </SplitText>
-            </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-center lg:text-left"
-            >
-                <div className="mb-6">
-                    <span className="text-blue-900 text-8xl font-semibold leading-tight">Dibangun Oleh {" "}</span>
-                    <span className="text-red-600 text-8xl font-semibold leading-tight">ArtaJaya</span>
-                </div>
-            </motion.div>
+  const handleAnimationComplete = () => {
+    console.log("All letters have animated!");
+  };
+
+  return (
+    <div className="relative w-full flex flex-col justify-center items-center overflow-hidden">
+      {/* Container untuk text - centered */}
+      <div className="flex flex-col items-end justify-center px-8 mb-2 max-w-7xl w-full">
+        <div className="w-full space-y-4">
+          {/* Judul kecil */}
+          <SplitText
+            text="/ Project"
+            className="text-2xl font-medium text-blue-900"
+            onLetterAnimationComplete={handleAnimationComplete}
+          />
+
+          {/* Headline utama */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <div className="leading-tight">
+              <span className="block text-5xl md:text-6xl lg:text-7xl font-semibold text-blue-900">
+                Dibangun Oleh
+              </span>
+              <span className="block text-5xl md:text-6xl lg:text-7xl font-semibold text-red-600">
+                ArtaJaya
+              </span>
+            </div>
+          </motion.div>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
 export default MainProject;
