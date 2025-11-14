@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { projectsData } from "@/assets/data/projects";
-import { ArrowLeft, ArrowUp, MoveUp, Phone } from "lucide-react";
+import { ArrowLeft, ArrowUp, Phone } from "lucide-react";
 import Navbar from "@/components/navbar-profile";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -149,7 +149,6 @@ const SubDetailProject: React.FC = () => {
                 {/* Back Button - now visible on all screens, positioned beside title */}
                 <button
                   onClick={() => {
-                    console.log("Back clicked");
                     navigate("/project-pages");
                   }}
                   className="flex-shrink-0 p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer mt-1"

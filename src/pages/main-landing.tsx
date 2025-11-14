@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ParallaxPage from "@/components/paralax-page";
 import MainLanding from "@/pages/landing-section/hero-section";
-import VmLanding from "@/pages/landing-section/vision-mission-section";
+import VissionMissionLanding from "@/pages/landing-section/vision-mission-section";
 import DescLanding from "./landing-section/about-section";
 import Loading from "@/components/loading";
 import Navbar from "@/components/navbar-profile";
@@ -114,7 +114,7 @@ const LandingPage: React.FC = () => {
       </ParallaxPage>
 
       <ParallaxPage id="section2">
-        <VmLanding />
+        <VissionMissionLanding />
       </ParallaxPage>
 
       <ParallaxPage id="section3">

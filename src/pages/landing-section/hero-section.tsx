@@ -25,7 +25,6 @@ const MainLanding = () => (
         textAlign="center"
         onLetterAnimationComplete={handleAnimationComplete}
       >
-
       </SplitText>
 
       {/* Headline - Responsive Typography */}

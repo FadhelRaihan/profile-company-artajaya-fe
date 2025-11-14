@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const VmLanding = () => {
+const VissionMissionLanding = () => {
   return (
     <div className="relative min-h-screen w-full flex flex-col gap-16 md:gap-20 lg:gap-24 items-center justify-center py-20 md:py-24 lg:py-28 px-6 md:px-12 lg:px-16 xl:px-20">
       {/* Visi - Slide from Left to Right */}
@@ -38,4 +38,4 @@ const VmLanding = () => {
   );
 };
 
-export default VmLanding;
+export default VissionMissionLanding;
