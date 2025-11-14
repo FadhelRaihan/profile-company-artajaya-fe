@@ -159,6 +159,12 @@ section {
   animation-direction: var(--animation-direction, forwards);
 }
 
+.clip-path-curved {
+  clip-path: ellipse(100% 80% at 50% 50%);
+  /* atau untuk lengkungan lebih detail */
+  clip-path: path('M 0,0 Q 50,20 100,0 L 100,100 L 0,100 Z');
+}
+
 .hover\:paused:hover {
   animation-play-state: paused;
 }

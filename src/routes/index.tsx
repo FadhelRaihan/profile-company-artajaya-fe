@@ -1,4 +1,3 @@
-import { Component } from 'lucide-react';
 import { lazy } from 'react';
 
 const LandingPage = lazy(() => import('@/pages/main-landing'));
@@ -7,6 +6,7 @@ const MainProject = lazy(() => import('@/pages/project-section/hero-projects-sec
 const SubDetailProject = lazy(() => import('@/pages/project-section/subdetail-projects-section'))
 const ProjectPages = lazy(() => import('@/pages/main-project'))
 const KegiatanKami = lazy(() => import('@/pages/kegiatan-kami-section'))
+import TimKami from '@/pages/timKami';
 
 const routes = [
   {
@@ -36,6 +36,10 @@ const routes = [
   {
     path: '/kegiatan-kami',
     Component: KegiatanKami
+  },
+  {
+    path: '/TimKami',
+    Component: TimKami
   }
 ];
 
