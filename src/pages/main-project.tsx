@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 // import ParallaxPage from "@/components/paralaxPage";
-import Loading from "@/components/loading";
+// import Loading from "@/components/loading";
 import Navbar from "@/components/navbar-profile";
-import MainProject from "./ProjectSection/main-project";
-import CardProject from "./ProjectSection/card-project";
+import MainProject from "./project-section/hero-projects-section";
+import CardProject from "./project-section/card-projects-section";
 
 const ProjectPages: React.FC = () => {
   useEffect(() => {
@@ -12,7 +12,6 @@ const ProjectPages: React.FC = () => {
   }, []);
 
   return (
-    <Loading loadingDuration={1000}>
       <div className="min-h-screen mt-12">
       <Navbar />
       <div className="px-56 py-25">
@@ -20,8 +19,6 @@ const ProjectPages: React.FC = () => {
         <CardProject />
       </div>
       </div>
-    
-    </Loading>
   );
 }
 

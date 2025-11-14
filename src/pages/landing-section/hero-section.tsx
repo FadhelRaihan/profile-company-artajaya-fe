@@ -1,13 +1,13 @@
 
 import { motion } from "framer-motion";
-import SplitText from "@/components/SplitText";
+import SplitText from "@/components/split-text";
 
   const handleAnimationComplete = () => {
   console.log('All letters have animated!');
 };
 
 const MainLanding = () => (
-  <div className="relative h-screen w-full flex items-center justify-center px-4 md:px-8 lg:px-16">
+  <div className="relative h-screen w-full flex items-center justify-center px-6 md:px-12 lg:px-16 xl:px-20">
     {/* Content Container */}
     <div className="max-w-7xl w-full">
       {/* Welcome Text */}

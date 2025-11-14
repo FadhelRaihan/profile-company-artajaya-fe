@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import SplitText from "@/components/SplitText";
+import SplitText from "@/components/split-text";
 import React from "react";
 
 const MainProject: React.FC = () => {
@@ -19,6 +19,13 @@ const MainProject: React.FC = () => {
             text="/ Project"
             className="text-2xl font-medium text-blue-900"
             onLetterAnimationComplete={handleAnimationComplete}
+            delay={300}
+            duration={0.8}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 60 }}
+            to={{ opacity: 1, y: 0 }}
+            
           />
 
           {/* Headline utama */}

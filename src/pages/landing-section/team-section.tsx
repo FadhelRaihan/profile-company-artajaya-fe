@@ -1,8 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import SplitText from "@/components/SplitText";
-import React, { useEffect, useState } from "react";
-import ExpandedCard from "@/components/ExpandedCard";
+import SplitText from "@/components/split-text";
+import ExpandedCard from "@/components/expanded-card";
 
 interface TeamMember {
   name: string;
@@ -11,14 +10,11 @@ interface TeamMember {
 }
 
 const TimKami: React.FC = () => {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
   // Dummy data - nanti bisa diganti dengan fetch dari backend
-  const dummyTeamMembers: TeamMember[] = [
+  const teamMembers: TeamMember[] = [
     {
       name: "Pham Hanni S.apalah",
-      position: "Direktur",
+      position: "Direktur", 
       image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=1000&fit=crop",
     },
     {
@@ -43,24 +39,15 @@ const TimKami: React.FC = () => {
     },
   ];
 
-  // Simulasi loading data
-  useEffect(() => {
-    // Simulasi fetch data
-    setTimeout(() => {
-      setTeamMembers(dummyTeamMembers);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
-
   const handleAnimationComplete = () => {
     console.log("All letters have animated!");
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-12 md:py-20 mt-18">
+    <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28">
       {/* Container untuk text - centered */}
-      <div className="flex flex-col items-start justify-center px-8 mb-8 md:mb-12 max-w-7xl w-full">
-        <div className="w-full space-y-4">
+      <div className="flex flex-col items-start justify-center px-6 md:px-12 lg:px-16 xl:px-20 mb-16 md:mb-20 lg:mb-12 max-w-7xl w-full pt-12">
+        <div className="w-full space-y-2">
           {/* Judul kecil */}
           <SplitText
             text="/ Tim Kami"
@@ -93,16 +80,15 @@ const TimKami: React.FC = () => {
           ease: "easeOut",
         }}
         viewport={{ once: true }} 
-        className="w-full flex justify-center"
+        className="w-full flex justify-center px-6 md:px-12 lg:px-16 xl:px-20"
       >
         <ExpandedCard
           members={teamMembers}
-          isLoading={isLoading}
           emptyMessage="Belum ada data tim tersedia"
           cardHeight="50vh"
           minCardHeight="350px"
           gap="3"
-          className="px-4 md:px-8 max-w-7xl w-full"
+          className="max-w-7xl w-full"
         />
       </motion.div>
     </div>

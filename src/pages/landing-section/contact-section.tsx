@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Mail, MapPin, Phone } from "lucide-react";
-import SplitText from "@/components/SplitText";
+import SplitText from "@/components/split-text";
 
 
 const Kontak: React.FC = () => {
@@ -14,9 +14,9 @@ const Kontak: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full px-4 md:px-8 pt-8">
+    <div className="flex flex-col w-full py-20 md:py-24 lg:py-28 px-6 md:px-12 lg:px-16 xl:px-12">
       {/* Headline */}
-      <div className="flex flex-col items-start justify-start mb-6 mt-36">
+      <div className="flex flex-col items-start justify-start mb-16 md:mb-20 lg:mb-6 max-w-7xl w-full mt-24 lg:mt-26">
         {/* Headline kecil */}
         <SplitText
           text="/ Kontak Kami"
@@ -45,9 +45,9 @@ const Kontak: React.FC = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="mt-4 w-full  pb-10 md:pb-10"
+        className="w-full max-w-7xl mx-auto"
       >
-      <div className="flex flex-col lg:flex-row justify-between gap-12 mt-2">
+      <div className="flex flex-col lg:flex-row justify-between gap-10 mb-16 md:mb-8">
         {/* Informasi Kontak */}
         <div className="flex flex-col space-y-6 lg:w-1/2">
           <div className="flex items-center gap-3">
@@ -124,7 +124,7 @@ const Kontak: React.FC = () => {
 
       {/* Google Maps Section - Full Width */}
 
-        <div className="-mx-[calc((100vw-100%)/2)] w-screen mb-6">
+        <div className="-mx-[calc((100vw-100%)/2)] w-screen mt-10 lg:mt-8">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56347862248!2d107.57311651640625!3d-6.903444400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1234567890123!5m2!1sen!2sid"
             width="100%"

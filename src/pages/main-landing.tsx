@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import ParallaxPage from "@/components/paralaxPage";
-import MainLanding from "@/pages/LandingSection/main-landing";
-import VmLanding from "@/pages/LandingSection/vm-landing";
-import DescLanding from "./LandingSection/desc-landing";
+import ParallaxPage from "@/components/paralax-page";
+import MainLanding from "@/pages/landing-section/hero-section";
+import VmLanding from "@/pages/landing-section/vision-mission-section";
+import DescLanding from "./landing-section/about-section";
 import Loading from "@/components/loading";
 import Navbar from "@/components/navbar-profile";
-import ProjectKami from "./LandingSection/project-kami";
-import Testimoni from "./LandingSection/testimoni";
-import TimKami from "./LandingSection/tim-kami";
-import Kontak from "./LandingSection/kontak";
+import ProjectKami from "./landing-section/projects-section";
+import Testimoni from "./landing-section/testiomonials-section";
+import TimKami from "./landing-section/team-section";
+import Kontak from "./landing-section/contact-section";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 // ===================== ScrollIndicator =====================
 const ScrollIndicator = () => {
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,6 +60,36 @@ const ScrollIndicator = () => {
 // ===================== LandingPage =====================
 const LandingPage: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const location = useLocation();
+
+  //Auto Scroll to spesific section
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const targetId = location.state.scrollTo;
+
+      const scrollToSection = () => {
+        const section = document.getElementById(targetId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+          return true;
+        }
+        return false;
+      };
+
+      // coba scroll segera, kalau belum ada elemen, tunggu render selesai
+      if (!scrollToSection()) {
+        const interval = setInterval(() => {
+          if (scrollToSection()) {
+            clearInterval(interval);
+          }
+        }, 200);
+        setTimeout(() => clearInterval(interval), 5000);
+      }
+
+      // hapus state agar tidak auto-scroll lagi setelah navigasi pertama
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   useEffect(() => {
     // Aktifkan scroll snap secara global

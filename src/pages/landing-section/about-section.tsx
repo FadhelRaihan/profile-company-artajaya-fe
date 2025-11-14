@@ -2,13 +2,13 @@ import { motion } from "framer-motion";
 
 const DescLanding = () => {
   return (
-    <div className="relative h-screen w-full flex items-center justify-center pt-16 px-4 md:px-8 lg:px-16">
+    <div className="relative min-h-screen w-full flex items-center justify-center py-20 md:py-24 lg:py-28 px-6 md:px-12 lg:px-16 xl:px-20">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false }}
         transition={{ duration: 0.8 }}
-        className="max-w-full md:max-w-3xl lg:max-w-4xl xl:max-w-5xl text-center lg:text-justify"
+        className="max-w-7xl w-full text-center lg:text-justify"
       >
         <motion.h2 
           initial={{ opacity: 0, y: 30 }}

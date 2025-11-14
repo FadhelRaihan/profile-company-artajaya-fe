@@ -20,6 +20,11 @@ interface Project {
   description: string;
 }
 
+{/**Remove Scroll indicator while navbar is */}
+const handleNavClick = () => {
+  window.dispatchEvent(new Event("navbar-click"));
+};
+
 const getRandomProjects = (arr: Project[], count: number): Project[] => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random()) as Project[];
   return shuffled.slice(0, count);
@@ -86,13 +91,16 @@ const Navbar = () => {
       {/* Isi navbar tetap sama */}
       <div className="p-2 rounded-xl">
         <Menu
-          onClick={toggleMenu}
+          onClick={() => {
+            toggleMenu();
+            handleNavClick();
+          }}
           className="text-[#00297A] size-[30px] focus:outline-none z-50 cursor-pointer"
         />
       </div>
 
       <div className="flex items-center">
-        <Link to="/landing" onClick={closeMenu}>
+        <Link to="/landing" onClick={() => {closeMenu(); handleNavClick();}}>
           <div className="w-full h-full px-5 py-2 bg-red-600 text-white flex items-center justify-center font-bold cursor-pointer">
             <img src={Icon} alt="icon" className="w-[30px]" />
           </div>
@@ -118,8 +126,11 @@ const Navbar = () => {
             <div className="top-0 left-0 w-full z-50 px-8 py-4 flex justify-between items-center md:px-32 md:py-8">
               <div className="p-2 rounded-xl">
                 <X
-                  onClick={closeMenu}
-                  className="text-[#00297A] size-[30px] focus:outline-none z-50 cursor-pointer"
+                  onClick={() => {
+                    closeMenu();
+                    handleNavClick();
+                  }}
+                  className="text-[#003399] size-[30px] focus:outline-none z-50 cursor-pointer"
                 />
               </div>
 
@@ -134,27 +145,39 @@ const Navbar = () => {
               <div className="flex flex-col gap-30">
                 <div className="flex flex-col gap-5 m-6">
                   <a
-                    href="/ProjectPages"
+                    href="/project-pages"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
-                    onClick={closeMenu}
+                    onClick={() => {
+                    closeMenu();
+                    handleNavClick();
+                  }}
                   >
                     Projects
                   </a>
                   <a
                     href="/about"
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
-                    onClick={closeMenu}
+                    onClick={() => {
+                    closeMenu();
+                    handleNavClick();
+                  }}
                   >
                     Tentang  Kami
                   </a>
                   <button
-                    onClick={() => scrollToSection('section6')}
+                    onClick={() => { 
+                      scrollToSection('section6');
+                      handleNavClick();
+                    }}
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition text-left"
                   >
                     Tim Kami
                   </button>
                   <button
-                    onClick={() => scrollToSection('section7')}
+                    onClick={() => {
+                      scrollToSection('section7');
+                      handleNavClick();
+                    }}
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition text-left"
                   >
                     Kontak Kami
@@ -169,8 +192,15 @@ const Navbar = () => {
                 </div>
               </div>
 
+               {/* Project Cards dengan Link ke Detail */}
               <div className="grid grid-cols-2 gap-8">
                 {randomProjects.map((project) => (
+                  <Link
+                  key={project.id}
+                  to={`/project/${project.id}`}
+                  onClick={closeMenu}
+                  className="block"
+                  >
                   <Card
                     key={project.id}
                     className="w-72 max-w-sm overflow-hidden hidden bg-transparent border-none shadow-none md:block"
@@ -196,11 +226,12 @@ const Navbar = () => {
 
                     {/* Content */}
                     <CardContent>
-                      <p className="text-[#000000] text-sm leading-relaxed">
+                      <p className="text-[#000000] text-sm leading-relaxed text-justify">
                         {project.description}
                       </p>
                     </CardContent>
                   </Card>
+                  </Link>
                 ))}
               </div>
             </div>

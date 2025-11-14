@@ -1,16 +1,18 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { projectsData } from "@/assets/data/projects";
-import { ArrowLeft, Phone } from "lucide-react";
+import { ArrowLeft, ArrowUp, MoveUp, Phone } from "lucide-react";
 import Navbar from "@/components/navbar-profile";
 import { Separator } from "@/components/ui/separator";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import { useInView } from 'react-intersection-observer';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,20 +22,40 @@ const SubDetailProject: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const projectId = Number(id);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Variants for animation
-  const fadeInUp= {
+  //Animate next/prev projects
+  const pageVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.5, ease: "easeOut" } 
+    },
+    exit: { 
+      opacity: 0, 
+      y: -40, 
+      transition: { duration: 0.4, ease: "easeIn" } 
+    },
+  };
+
+ // Variants for animation
+  const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0,
-    transition: { 
-      type: "spring",
-       stiffness: 60,
-       damping: 12,
-       duration: 0.7, 
-       delay: 0.1,
-       },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        type: "spring",
+        stiffness: 60,
+        damping: 12,
+        duration: 0.7, 
+        delay: 0.1,
       },
-  } as any
+    },
+  } as any;
 
   // Refs for lazy-load + animation
   const [titleRef, titleInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -45,6 +67,45 @@ const SubDetailProject: React.FC = () => {
   const [relatedRef, relatedInView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
   const project = projectsData.find((p) => p.id === projectId);
+
+  //Carousel autoplay effect
+  useEffect(() => {
+    if (!api || !project) return;
+
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [api, project]);
+
+  //tracking current slide
+  useEffect(() => {
+    if (!api) return;
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
+  //Handle navigate pages
+  const handleNavigate = (targetId: number) => {
+    setIsTransitioning(true); // aktifkan animasi keluar
+    setTimeout(() => {
+      navigate(`/project/${targetId}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setIsTransitioning(false);
+    }, 400); // sesuai durasi animasi keluar
+  };
 
   if (!project) {
     return (
@@ -65,14 +126,6 @@ const SubDetailProject: React.FC = () => {
     );
   }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <div className="w-full min-h-screen bg-white">
       {/* Fixed Navbar */}
@@ -80,39 +133,43 @@ const SubDetailProject: React.FC = () => {
         <Navbar />
       </div>
 
-      {/* Back Button - separate from Navbar, hidden on mobile */}
-        <button
-          onClick={() => {
-            console.log("Back clicked");
-            navigate("/ProjectPages");
-          }}
-          className="hidden md:block fixed top-8 left-[55px] z-[60] p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer"
-          aria-label="Kembali ke Projects"
-        >
-          <ArrowLeft className="text-[#00297A] size-[30px]" />
-        </button>
-
       {/* Main Content with top padding to avoid overlap with fixed navbar */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 pt-[72px] mr-8 mt-12">
-        
-        {/* Title */}
-        <div ref={titleRef}>
+      <div className="max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 pt-[78px] mt-4">
+
+        {/* Title with Back Button */}
+        <div ref={titleRef} className="mb-8">
           {titleInView && (
             <motion.div
               initial="hidden"
               animate="visible"
               variants={fadeInUp}
+              className="mt-8 mb-8"
             >
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-8 mt-8 leading-tight">
-                {project.title}
-              </h1>
-              <Separator className="my-4 h-1 bg-gray-700" />
+              <div className="flex items-start gap-3 md:gap-4">
+                {/* Back Button - now visible on all screens, positioned beside title */}
+                <button
+                  onClick={() => {
+                    console.log("Back clicked");
+                    navigate("/project-pages");
+                  }}
+                  className="flex-shrink-0 p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer mt-1"
+                  aria-label="Kembali ke Projects"
+                >
+                  <ArrowLeft className="text-[#00297A] size-6 md:size-7 lg:size-8" />
+                </button>
+                
+                {/* Title */}
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] leading-tight">
+                  {project.title}
+                </h1>
+              </div>
+              <Separator className="my-4 h-1 bg-gray-700"/>
             </motion.div>
           )}
         </div>
 
         {/* Carousel */}
-        <div ref={carouselRef} className="relative mb-12">
+        <div ref={carouselRef} className="relative w-full h-[260px] md:h-[360px] lg:h-[420px] rounded-none overflow-hidden shadow-md mb-8" >
           {carouselInView && (
             <motion.div
               initial="hidden"
@@ -120,18 +177,28 @@ const SubDetailProject: React.FC = () => {
               variants={fadeInUp}
             >
               <Carousel
-                opts={{ align: "start" }}
+              setApi={setApi}
+                opts={{ align: "start", loop:true }}
                 className="w-full"
               >
                 <CarouselContent className="-ml-0">
                   {project.images.map((image, index) => (
                     <CarouselItem key={index} className="pl-0 basis-full">
-                      <div className="relative w-full h-[350px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-lg">
-                        <img
+                      <div className="relative w-full h-[350px] md:h-[500px] lg:h-[600px] rounded-none overflow-hidden shadow-lg">
+                      <AnimatePresence mode="wait">
+                        {current === index && (
+                          <motion.img
+                          key={index}
                           src={image}
                           alt={`${project.title} - Image ${index + 1}`}
                           className="w-full h-full object-cover"
-                        />
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity:1 }}
+                          exit={{ opacity:0 }}
+                          transition={{ duration: 0.5 }}
+                          />
+                      )}
+                      </AnimatePresence>
                         <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
                           {index + 1} / {project.images.length}
                         </div>
@@ -179,30 +246,35 @@ const SubDetailProject: React.FC = () => {
           )}
         </div>
 
-        {/* About Section */}
-        <div ref={aboutRef} className="mb-16">
+        {/* About Section - Right aligned with max width */}
+        <div ref={aboutRef}>
           {aboutInView && (
             <motion.div
               initial="hidden"
               animate="visible"
               variants={fadeInUp}
             >
-              <h2 className="text-2xl md:text-3xl font-medium text-[#003399] mb-6">
+              <h2 className="text-2xl md:text-3xl font-medium text-[#003399] mb-2">
                 About
               </h2>
-              <Separator className="my-10 h-1 bg-gray-700" />
-              <div className="text-gray-600 leading-relaxed text-justify">
-                {project.description.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4">{paragraph}</p>
-                ))}
+              <Separator className="my-4 h-1 bg-gray-700" />
+              
+              {/* Content wrapper with left space */}
+              <div className="flex justify-end">
+                <div className="w-full md:w-4/5 lg:w-3/4 text-gray-600 leading-relaxed text-justify">
+                  {project.description.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="mb-2">{paragraph}</p>
+                  ))}
+                </div>
               </div>
-              <Separator className="my-8 h-1 bg-gray-700" />
+              
+              <Separator className="my-2 h-1 bg-gray-700" />
             </motion.div>
           )}
         </div>
 
-        {/* Navigation Buttons */}
-        <div ref={navRef} className="mb-16 py-8">
+        {/**Navigation buttons */}
+        <div ref={navRef} className="mb-2 py-8">
           {navInView && (
             <motion.div
               initial="hidden"
@@ -213,7 +285,7 @@ const SubDetailProject: React.FC = () => {
               <button
                 onClick={() => {
                   const prevId = projectId > 1 ? projectId - 1 : projectsData.length;
-                  navigate(`/project/${prevId}`);
+                  handleNavigate(prevId);
                 }}
                 className="text-[#003399] hover:text-[#002266] font-semibold text-lg flex items-center gap-2 transition-colors underline"
               >
@@ -222,7 +294,7 @@ const SubDetailProject: React.FC = () => {
               <button
                 onClick={() => {
                   const nextId = projectId < projectsData.length ? projectId + 1 : 1;
-                  navigate(`/project/${nextId}`);
+                  handleNavigate(nextId);
                 }}
                 className="text-[#003399] hover:text-[#002266] font-semibold text-lg flex items-center gap-2 transition-colors underline"
               >
@@ -233,7 +305,7 @@ const SubDetailProject: React.FC = () => {
         </div>
 
         {/* CTA Section */}
-        <div ref={ctaRef} className="text-center mb-16 py-16 rounded-3xl">
+        <div ref={ctaRef} className="text-end mb-4 py-8 rounded-3xl">
           {ctaInView && (
             <motion.div
               initial="hidden"
@@ -251,7 +323,7 @@ const SubDetailProject: React.FC = () => {
                 items-center
                 hover:bg-[#003399] hover:text-white
                 transition-colors duration-300"
-                onClick={() => navigate("/Kontak")}
+                onClick={() => navigate("/", { state: { scrollTo: "section7" } })}
                 variant={"outline"}
               >
                 Hubungi Kami <Phone/>
@@ -261,7 +333,7 @@ const SubDetailProject: React.FC = () => {
         </div>
 
         {/* Related Projects */}
-        <div ref={relatedRef} className="mb-12">
+        <div ref={relatedRef} className="mb-4">
           {relatedInView && (
             <motion.div
               initial="hidden"
@@ -317,10 +389,10 @@ const SubDetailProject: React.FC = () => {
           >
             <Button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="bg-[#003399] text-white p-3 rounded-full shadow-lg hover:bg-[#002266] transition-colors"
+              className="bg-[#003399] text-white p-3 rounded-xl shadow-lg hover:bg-[#002266] transition-colors"
               aria-label="Scroll to top"
             >
-              ↑
+              <ArrowUp strokeWidth={4}/>
             </Button>
           </motion.div>
         )}

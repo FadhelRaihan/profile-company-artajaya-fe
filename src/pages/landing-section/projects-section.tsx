@@ -1,42 +1,18 @@
 "use client";
 import { motion } from "framer-motion";
-import SplitText from "@/components/SplitText";
+import SplitText from "@/components/split-text";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import React from "react";
+import { projectsData } from "@/assets/data/projects";
 
 // Data proyek dengan gambar
-const projects = [
-  {
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
-    title: "Prama Toserba",
-    location: "Jl. Siliwangi Kecamatan Bala Endah Kabupaten Bandung",
-    category: "Retail & Commercial",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
-    title: "Office Tower Jakarta",
-    location: "Jl. Sudirman Jakarta Pusat",
-    category: "Commercial Building",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&q=80",
-    title: "Residential Complex",
-    location: "Jl. Gatot Subroto Bandung",
-    category: "Residential",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&q=80",
-    title: "Shopping Mall",
-    location: "Jl. Asia Afrika Bandung",
-    category: "Retail & Entertainment",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?w=800&q=80",
-    title: "Hotel & Resort",
-    location: "Jl. Raya Lembang Bandung Barat",
-    category: "Hospitality",
-  },
-];
+const projects = projectsData.map(project => ({
+  id: project.id,
+  image: project.image,
+  title: project.title,
+  location: project.location,
+  category: project.category,
+}));
 
 const ProjectKami: React.FC = () => {
   const handleAnimationComplete = () => {
@@ -44,10 +20,10 @@ const ProjectKami: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col">
-      {/* Container untuk text - dengan padding */}
-      <div className="flex flex-col items-center justify-center px-4 pt-32 md:pt-48">
-        <div className="max-w-7xl w-full  mb-16 md:mb-24 lg:mb-2 pt-8">
+    <div className="relative w-full min-h-screen flex flex-col py-20 md:py-24 lg:py-28">
+      {/* Container untuk text - dengan padding konsisten */}
+      <div className="flex flex-col items-center justify-center px-6 md:px-12 lg:px-16 xl:px-20 mb-16 md:mb-20 lg:mb-12 pt-12">
+        <div className="max-w-7xl w-full">
           {/* Judul kecil */}
           <SplitText
             text="/ Proyek Kami"
@@ -57,8 +33,8 @@ const ProjectKami: React.FC = () => {
 
           {/* Headline utama */}
           <motion.div
-            initial={{ opacity: 0, y: 50,}}
-            whileInView={{ opacity: 1, y: 0,}}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-center lg:text-left"
           >
@@ -74,19 +50,20 @@ const ProjectKami: React.FC = () => {
         </div>
       </div>
 
-      {/* Cards KELUAR dari semua container - benar-benar full width */}
+      {/* Cards - full width */}
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.1 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-        className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] pb-36 pt-16"
+        className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
       >
         <InfiniteMovingCards 
           items={projects} 
           direction="left" 
           speed="slow" 
           fullWidth={true} 
+          className="rounded-none"
         />
       </motion.div>
     </div>

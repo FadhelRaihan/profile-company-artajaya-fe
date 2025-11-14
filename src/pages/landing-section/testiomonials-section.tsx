@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import SplitText from "@/components/SplitText";
+import SplitText from "@/components/split-text";
 import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -53,9 +53,9 @@ const Testimoni: React.FC = () => {
   const duplicatedTestimonis = [...testimonis, ...testimonis, ...testimonis];
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 mt-12">
-      {/* Container untuk text - centered */}
-      <div className="flex flex-col items-start justify-center px-8 mb-20 max-w-7xl w-full">
+    <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28">
+      {/* Container untuk text */}
+      <div className="flex flex-col items-start justify-center px-6 md:px-12 lg:px-16 xl:px-20 mb-16 md:mb-20 lg:mb-8 max-w-7xl w-full pt-12">
         <div className="w-full space-y-4">
           {/* Judul kecil */}
           <SplitText

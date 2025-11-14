@@ -1,11 +1,11 @@
 import { Component } from 'lucide-react';
 import { lazy } from 'react';
 
-const LandingPage = lazy(() => import('@/pages/landing'));
+const LandingPage = lazy(() => import('@/pages/main-landing'));
 const Login = lazy(() => import('@/pages/auth/login'));
-const MainProject = lazy(() => import('@/pages/ProjectSection/main-project'))
-const SubDetailProject = lazy(() => import('@/pages/ProjectSection/sub-detail-projects'))
-const ProjectPages = lazy(() => import('@/pages/project-pages'))
+const MainProject = lazy(() => import('@/pages/project-section/hero-projects-section'))
+const SubDetailProject = lazy(() => import('@/pages/project-section/subdetail-projects-section'))
+const ProjectPages = lazy(() => import('@/pages/main-project'))
 const KegiatanKami = lazy(() => import('@/pages/kegiatan-kami-section'))
 
 const routes = [
@@ -22,11 +22,11 @@ const routes = [
     Component: Login,
   },
   {
-    path: '/ProjectPages',
+    path: '/project-pages',
     Component: ProjectPages,
   },
   {
-    path: '/MainProject',
+    path: '/main-project',
     Component: MainProject
   },
   {
@@ -34,7 +34,7 @@ const routes = [
     Component: SubDetailProject
   },
   {
-    path: '/KegiatanKami',
+    path: '/kegiatan-kami',
     Component: KegiatanKami
   }
 ];

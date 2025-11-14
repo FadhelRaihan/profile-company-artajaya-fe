@@ -127,10 +127,15 @@ const ExpandedCard: React.FC<ExpandedCardProps> = ({
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                 <div
                   className={`
-                    transition-all duration-500
-                    ${isActive ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}
-                  `}
-                >
+                      transition-all duration-500
+
+                      ${
+                        activeId !== null
+                          ? (isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4')
+                          : 'opacity-100 translate-y-0'
+                      }
+                    `}
+                  >
                   <p
                     className="text-white text-xs md:text-sm font-medium mb-1 transition-all duration-500"
                   >

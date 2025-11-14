@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import SplitText from "@/components/SplitText";
+import SplitText from "@/components/split-text";
 import React, { useEffect, useState, useRef } from "react";
 import Navbar from "@/components/navbar-profile";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";

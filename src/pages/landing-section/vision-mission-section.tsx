@@ -2,14 +2,14 @@ import { motion } from "framer-motion";
 
 const VmLanding = () => {
   return (
-    <div className="relative min-h-screen w-full flex flex-col gap-12 items-center justify-center mt-10 px-4 py-12 md:px-8 lg:px-16 xl:px-24">
+    <div className="relative min-h-screen w-full flex flex-col gap-16 md:gap-20 lg:gap-24 items-center justify-center py-20 md:py-24 lg:py-28 px-6 md:px-12 lg:px-16 xl:px-20">
       {/* Visi - Slide from Left to Right */}
       <motion.div 
         initial={{ opacity: 0, x: -100 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl text-center lg:text-left"
+        className="max-w-7xl w-full text-center lg:text-left"
       >
         <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-4">
           Visi
@@ -25,7 +25,7 @@ const VmLanding = () => {
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl text-center lg:text-left"
+        className="max-w-7xl w-full text-center lg:text-left"
       >
         <h3 className="text-right text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-4">
           Misi
