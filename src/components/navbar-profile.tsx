@@ -189,18 +189,17 @@ const Navbar = () => {
                   >
                     Projects
                   </a>
-                  <a
-                    href="/about"
+                  <button
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={() => {
-                      closeMenu();
+                      navigateToSection('section3')
                       handleNavClick();
                     }}
                   >
                     Tentang Kami
-                  </a>
+                  </button>
                   <a
-                    href="/hero-ourteam"
+                    href="/team-activity-section"
                     onClick={() => { 
                       handleNavClick();
                     }}
