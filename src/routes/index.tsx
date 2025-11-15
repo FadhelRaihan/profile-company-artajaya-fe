@@ -1,4 +1,4 @@
-import { Component } from 'lucide-react';
+// import { Component } from 'lucide-react';
 import { lazy } from 'react';
 
 const LandingPage = lazy(() => import('@/pages/main-landing'));
