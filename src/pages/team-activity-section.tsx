@@ -5,8 +5,10 @@ import Navbar from "@/components/navbar-profile";
 import { ArrowLeft } from "lucide-react";
 import React, { useEffect, useState, useRef, type ReactElement } from "react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { activitesData } from "@/assets/data/activity-data"
 import { ourTeamImage } from "@/assets/data/our-team";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { fetchActiveKegiatan, clearError } from "@/redux/kegiatan/kegiatanSlice";
+import { errorHandling } from "@/utils/index";
 
 interface BentoItem {
   title: string;
@@ -14,10 +16,6 @@ interface BentoItem {
   header: React.ReactNode;
   icon?: React.ReactNode;
 }
-
-const handleAnimationComplete = () => {
-  console.log("All letters have animated!");
-};
 
 type ScrollValues = {
   heroY: MotionValue<number>;
@@ -48,10 +46,25 @@ const ScrollContainer = ({
 };
 
 const TeamActivitySection = () => {
+  const dispatch = useAppDispatch();
+  const { kegiatan, loading, error } = useAppSelector((state) => state.kegiatan);
+  
   const [items, setItems] = useState<BentoItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // Fetch data from backend on mount
+  useEffect(() => {
+    dispatch(fetchActiveKegiatan());
+  }, [dispatch]);
+
+  // Handle error from Redux
+  useEffect(() => {
+    if (error) {
+      errorHandling.handleApiError({ message: error });
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   // Setup Intersection Observer
   useEffect(() => {
@@ -72,57 +85,66 @@ const TeamActivitySection = () => {
     };
   }, []);
 
-  // Generate items
+  // Generate items from backend data
   useEffect(() => {
-  setTimeout(() => {
-    const mappedItems: BentoItem[] = activitesData.map((kegiatan, index) => {
-      const firstPhoto = kegiatan.photos?.[0]?.photo_url ?? "https://picsum.photos/seed/default/800/600";
+    if (kegiatan && kegiatan.length > 0) {
+      const mappedItems: BentoItem[] = kegiatan.map((activity, index) => {
+        // Ambil foto pertama dari array photos, atau gunakan default placeholder
+        const firstPhoto = activity.photos?.[0]?.url || 
+                          `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
 
-       return {
-        title: kegiatan.nama_kegiatan,
-        description: kegiatan.deskripsi_singkat,
-        header: (
-          <div data-index={index} className="relative h-full w-full overflow-hidden">
-            {visibleItems.has(index) ? (
-              <>
-                <img
-                  src={firstPhoto}
-                  alt={kegiatan.nama_kegiatan}
-                  className="object-cover w-full h-full transition-transform duration-300 group-hover/bento:scale-110"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#003399] via-[#003399]/5 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                  <h3 className="font-bold text-lg mb-1 line-clamp-2">
-                    {kegiatan.nama_kegiatan}
-                  </h3>
-                  <p className="text-sm opacity-90 line-clamp-2">
-                    {kegiatan.deskripsi_singkat}
-                  </p>
-                </div>
-              </>
-            ) : (
-              <div className="w-full h-full bg-gray-200 animate-pulse" />
-            )}
-          </div>
-        ),
-      };
-    });
+        return {
+          title: activity.nama_kegiatan,
+          description: activity.deskripsi_singkat,
+          header: (
+            <div 
+              data-index={index} 
+              className="relative h-full w-full overflow-hidden"
+            >
+              {visibleItems.has(index) ? (
+                <>
+                  <img
+                    src={firstPhoto}
+                    alt={activity.nama_kegiatan}
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover/bento:scale-110"
+                    loading="lazy"
+                    onError={(e) => {
+                      // Fallback jika image gagal
+                      (e.target as HTMLImageElement).src = 
+                        `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#003399] via-[#003399]/5 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="font-bold text-lg mb-1 line-clamp-2">
+                      {activity.nama_kegiatan}
+                    </h3>
+                    <p className="text-sm opacity-90 line-clamp-2">
+                      {activity.deskripsi_singkat}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full bg-gray-200 animate-pulse" />
+              )}
+            </div>
+          ),
+        };
+      });
 
-    setItems(mappedItems);
-    setIsLoading(false);
-  }, 400);
-}, [visibleItems]);
+      setItems(mappedItems);
+    }
+  }, [kegiatan, visibleItems]);
 
   // Observe items after mount
   useEffect(() => {
-    if (!isLoading && observerRef.current) {
+    if (!loading && observerRef.current && items.length > 0) {
       const elements = document.querySelectorAll("[data-index]");
       elements.forEach((el) => observerRef.current!.observe(el));
     }
-  }, [isLoading]);
+  }, [loading, items]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-blue-900 text-xl font-semibold">Loading...</div>
@@ -165,7 +187,6 @@ const TeamActivitySection = () => {
                       triggerOnMount={true}
                       mountDelay={0}
                       textAlign="center"
-                      onLetterAnimationComplete={handleAnimationComplete}
                     />
                   </div>
 
@@ -215,7 +236,6 @@ const TeamActivitySection = () => {
                 <SplitText
                   text="/ Kegiatan Kami"
                   className="text-xl md:text-2xl font-medium text-blue-900"
-                  onLetterAnimationComplete={handleAnimationComplete}
                 />
 
                 <motion.div
@@ -232,15 +252,21 @@ const TeamActivitySection = () => {
                 </motion.div>
               </div>
 
-              <BentoGrid className="max-w-6xl mx-auto mt-12">
-                {items.map((item, i) => (
-                  <BentoGridItem
-                    key={i}
-                    header={item.header}
-                    className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-                  />
-                ))}
-              </BentoGrid>
+              {items.length > 0 ? (
+                <BentoGrid className="max-w-6xl mx-auto mt-12">
+                  {items.map((item, i) => (
+                    <BentoGridItem
+                      key={i}
+                      header={item.header}
+                      className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+                    />
+                  ))}
+                </BentoGrid>
+              ) : (
+                <div className="mt-12 text-center text-gray-600">
+                  <p>Belum ada kegiatan yang tersedia</p>
+                </div>
+              )}
             </div>
           </motion.div>
         </>

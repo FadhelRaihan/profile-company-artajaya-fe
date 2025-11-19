@@ -2,47 +2,9 @@
 import { motion } from "framer-motion";
 import SplitText from "@/components/split-text";
 import ExpandedCard from "@/components/expanded-card";
-
-interface TeamMember {
-  name: string;
-  position: string;
-  image: string;
-}
+import { ourTeam } from "@/assets/data/our-team";
 
 const TimKami: React.FC = () => {
-  // Dummy data - nanti bisa diganti dengan fetch dari backend
-  const teamMembers: TeamMember[] = [
-    {
-      name: "Pham Hanni S.apalah",
-      position: "Direktur", 
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=1000&fit=crop",
-    },
-    {
-      name: "Sarah Johnson",
-      position: "Manager Operasional",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=1000&fit=crop",
-    },
-    {
-      name: "Lisa Anderson",
-      position: "Head of Design",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&h=1000&fit=crop",
-    },
-    {
-      name: "Emma Wilson",
-      position: "Lead Developer",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&h=1000&fit=crop",
-    },
-    {
-      name: "Maria Garcia",
-      position: "Marketing Director",
-      image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&h=1000&fit=crop",
-    },
-  ];
-
-  const handleAnimationComplete = () => {
-    console.log("All letters have animated!");
-  };
-
   return (
     <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28">
       {/* Container untuk text - centered */}
@@ -52,7 +14,6 @@ const TimKami: React.FC = () => {
           <SplitText
             text="/ Tim Kami"
             className="text-xl md:text-2xl font-medium text-blue-900"
-            onLetterAnimationComplete={handleAnimationComplete}
           />
 
           {/* Headline utama */}
@@ -83,7 +44,7 @@ const TimKami: React.FC = () => {
         className="w-full flex justify-center px-6 md:px-12 lg:px-16 xl:px-20"
       >
         <ExpandedCard
-          members={teamMembers}
+          members={ourTeam}
           emptyMessage="Belum ada data tim tersedia"
           cardHeight="50vh"
           minCardHeight="350px"

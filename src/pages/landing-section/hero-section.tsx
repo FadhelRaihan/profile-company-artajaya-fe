@@ -2,10 +2,6 @@
 import { motion } from "framer-motion";
 import SplitText from "@/components/split-text";
 
-  const handleAnimationComplete = () => {
-  console.log('All letters have animated!');
-};
-
 const MainLanding = () => (
   <div className="relative h-screen w-full flex items-center justify-center px-6 md:px-12 lg:px-16 xl:px-20">
     {/* Content Container */}
@@ -23,7 +19,6 @@ const MainLanding = () => (
         threshold={0.6}
         rootMargin="-100px"
         textAlign="center"
-        onLetterAnimationComplete={handleAnimationComplete}
       >
       </SplitText>
 

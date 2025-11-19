@@ -1,56 +1,50 @@
 "use client";
+import React from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import SplitText from "@/components/split-text";
 import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-// Data testimoni
-const testimonis = [
-  {
-    comment: "ArchiCore selalu menjadi rekan andal dalam menavigasi setiap tahap pembangunan dengan kualitas dan ketepatan waktu yang luar biasa.",
-    userName: "Achmad Soewardi",
-    userImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
-    jabatan: "Ketua yayasan",
-    userInitial: "AS"
-  },
-  {
-    comment: "ArchiCore selalu menjadi rekan andal dalam menavigasi setiap tahap pembangunan dengan kualitas dan ketepatan waktu yang luar biasa.",
-    userName: "Siti Rahayu",
-    userImage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80",
-    jabatan: "Ketua hima",
-    userInitial: "SR"
-  },
-  {
-    comment: "ArchiCore selalu menjadi rekan andal dalam menavigasi setiap tahap pembangunan dengan kualitas dan ketepatan waktu yang luar biasa.",
-    userName: "Ahmad Wijaya",
-    userImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80",
-    jabatan: "Direktur",
-    userInitial: "AW"
-  },
-  {
-    comment: "ArchiCore selalu menjadi rekan andal dalam menavigasi setiap tahap pembangunan dengan kualitas dan ketepatan waktu yang luar biasa.",
-    userName: "Linda Permata",
-    userImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80",
-    jabatan: "Manager",
-    userInitial: "LP"
-  },
-  {
-    comment: "ArchiCore selalu menjadi rekan andal dalam menavigasi setiap tahap pembangunan dengan kualitas dan ketepatan waktu yang luar biasa.",
-    userName: "Rudi Hartono",
-    userImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80",
-    jabatan: "Owner",
-    userInitial: "RH"
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchActiveTestimoni } from "@/redux/testimoni/testimoniSlice"; 
+import type { RootState, AppDispatch } from "@/redux/store";
 
 const Testimoni: React.FC = () => {
-  const handleAnimationComplete = () => {
-    console.log("All letters have animated!");
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const { testimonials, loading, error } = useSelector(
+    (state: RootState) => state.testimoni
+  );
 
-  // Duplikasi data untuk infinite loop yang smooth
-  const duplicatedTestimonis = [...testimonis, ...testimonis, ...testimonis];
+  useEffect(() => {
+    if (!testimonials.length) {
+      dispatch(fetchActiveTestimoni());
+    }
+  }, [dispatch, testimonials.length]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Gagal mengambil data: {error}</div>;
+  }
+
+  // Normalize testimonials data
+const normalizedTestimonials = testimonials.map((t) => {
+  const testerName = t.testerName?.trim() || "Client";
+  const userInitial = testerName.charAt(0).toUpperCase();
+
+  return {
+    ...t,  // Mempertahankan semua properti asli
+    displayName: testerName,
+    userInitial: userInitial,
+    jabatan: "Client", // default jabatan
+    message: t.testimoni,  // Menambahkan properti baru "message" untuk menggantikan testimoni di UI
+  };
+});
+
+  // Duplicate untuk infinite loop effect
+  const duplicatedTestimonis = [...normalizedTestimonials, ...normalizedTestimonials];
 
   return (
     <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28">
@@ -61,7 +55,6 @@ const Testimoni: React.FC = () => {
           <SplitText
             text="/ Testimoni"
             className="text-2xl font-medium text-blue-900"
-            onLetterAnimationComplete={handleAnimationComplete}
           />
 
           {/* Headline utama */}
@@ -83,16 +76,11 @@ const Testimoni: React.FC = () => {
       <div className="relative w-full overflow-hidden">
         <motion.div
           className="flex gap-8"
-          animate={{
-            x: [0, -100 * testimonis.length + "%"],
-          }}
+          animate={{ x: ["0%", "-200%"] }}
           transition={{
-            x: {
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: 35, 
-              ease: "linear",
-            },
+            duration: 15,
+            ease: "linear",
+            repeat: Infinity,
           }}
         >
           {duplicatedTestimonis.map((testimonial, index) => (
@@ -103,20 +91,23 @@ const Testimoni: React.FC = () => {
               <CardContent className="p-10 space-y-8">
                 {/* Comment */}
                 <p className="text-blue-900 text-xl leading-relaxed font-medium group-hover:text-white transition-colors duration-300">
-                  {testimonial.comment}
+                  {testimonial.testimoni}
                 </p>
 
                 {/* User Info - Horizontal Layout */}
                 <div className="flex items-center gap-4">
                   <Avatar className="h-14 w-14">
-                    <AvatarImage src={testimonial.userImage} alt={testimonial.userName} />
+                    <AvatarImage 
+                      src={testimonial.userInitial} 
+                      alt={testimonial.displayName} 
+                    />
                     <AvatarFallback className="bg-blue-900 text-white font-semibold text-lg group-hover:bg-white group-hover:text-blue-900 transition-colors duration-300">
                       {testimonial.userInitial}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
                     <p className="font-bold text-red-600 text-lg group-hover:text-white transition-colors duration-300">
-                      {testimonial.userName}
+                      {testimonial.displayName}
                     </p>
                     <span className="font-normal text-blue-900 text-base group-hover:text-white transition-colors duration-300">
                       {testimonial.jabatan}
