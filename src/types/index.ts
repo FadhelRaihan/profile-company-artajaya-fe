@@ -36,7 +36,7 @@ export interface ProjectResponse {
 */
 export interface TeamMember {
     id: string;
-    name: string;
+    fullName: string;
     position: string;
     imageUrl: string;
     createdAt: string;
@@ -229,6 +229,7 @@ export interface TeamsState {
     loading: boolean;
     error: string | null;
     total: number;
+    position: string[];
 }
 /**
 *End Team State

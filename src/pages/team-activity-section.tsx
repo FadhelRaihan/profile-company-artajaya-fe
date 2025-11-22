@@ -6,8 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import React, { useEffect, useState, useRef, type ReactElement } from "react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { ourTeamImage } from "@/assets/data/our-team";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { fetchActiveKegiatan, clearError } from "@/redux/kegiatan/kegiatanSlice";
+import { useKegiatanList, useKegiatanLoading, useKegiatanError, useKegiatanActions } from "@/stores";
 import { errorHandling } from "@/utils/index";
 
 interface BentoItem {
@@ -46,25 +45,27 @@ const ScrollContainer = ({
 };
 
 const TeamActivitySection = () => {
-  const dispatch = useAppDispatch();
-  const { kegiatan, loading, error } = useAppSelector((state) => state.kegiatan);
-  
+  const kegiatan = useKegiatanList();
+  const loading = useKegiatanLoading();
+  const error = useKegiatanError();
+  const { fetchActiveKegiatan, clearError } = useKegiatanActions();
+
   const [items, setItems] = useState<BentoItem[]>([]);
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Fetch data from backend on mount
   useEffect(() => {
-    dispatch(fetchActiveKegiatan());
-  }, [dispatch]);
+    fetchActiveKegiatan();
+  }, []);
 
-  // Handle error from Redux
+  // Handle error from store
   useEffect(() => {
     if (error) {
       errorHandling.handleApiError({ message: error });
-      dispatch(clearError());
+      clearError();
     }
-  }, [error, dispatch]);
+  }, [error]);
 
   // Setup Intersection Observer
   useEffect(() => {
@@ -90,15 +91,16 @@ const TeamActivitySection = () => {
     if (kegiatan && kegiatan.length > 0) {
       const mappedItems: BentoItem[] = kegiatan.map((activity, index) => {
         // Ambil foto pertama dari array photos, atau gunakan default placeholder
-        const firstPhoto = activity.photos?.[0]?.url || 
-                          `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
+        const firstPhoto =
+          activity.photos?.[0]?.url ||
+          `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
 
         return {
           title: activity.nama_kegiatan,
           description: activity.deskripsi_singkat,
           header: (
-            <div 
-              data-index={index} 
+            <div
+              data-index={index}
               className="relative h-full w-full overflow-hidden"
             >
               {visibleItems.has(index) ? (
@@ -110,7 +112,7 @@ const TeamActivitySection = () => {
                     loading="lazy"
                     onError={(e) => {
                       // Fallback jika image gagal
-                      (e.target as HTMLImageElement).src = 
+                      (e.target as HTMLImageElement).src =
                         `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
                     }}
                   />
@@ -157,13 +159,12 @@ const TeamActivitySection = () => {
       {({ heroY, heroOpacity, activitiesY }) => (
         <>
           <Navbar />
-
           {/* Hero Section - Team */}
           <motion.div
             style={{ y: heroY, opacity: heroOpacity }}
-            className="relative w-full min-h-[80vh] flex flex-col justify-center items-center overflow-hidden py-12  md:py-12 lg:py-12"
-          >
-            <div className="max-w-7xl w-full mt-12">
+            className="relative w-full min-h-[80vh] flex flex-col justify-center items-center overflow-hidden py-12 md:py-12 lg:py-12"
+          > 
+            <div className="max-w-7xl w-full mt-12">  
               <div className="flex items-center gap-3 mb-4 justify-center lg:justify-start">
                 <button
                   onClick={() => window.history.back()}
@@ -214,19 +215,19 @@ const TeamActivitySection = () => {
               </div>
             </div>
             <ThreeDImageRing
-              images={ourTeamImage}
-              containerClassName="overflow-visible relative"
-              imageDistance={800}
-              width={300}
-              animationDuration={2}
-              hoverOpacity={1}
-              perspective={1400}
-              imageClassName="w-[400px] h-[400px] object-fill shadow-lg hover:scale-105 transition-transform duration-300"
-              gapOffset={0}
-            />
+                images={ourTeamImage}
+                containerClassName="overflow-visible relative"
+                imageDistance={800}
+                width={300} // Pastikan ini sesuai dengan ukuran yang diinginkan untuk gambar
+                animationDuration={2}
+                hoverOpacity={1}
+                perspective={1400}
+                imageClassName="w-full h-full object-cover shadow-lg hover:scale-105 transition-transform duration-300" // Update untuk object-cover
+                gapOffset={0}
+              /> 
           </motion.div>
-
           {/* Activities Section */}
+          
           <motion.div
             style={{ y: activitiesY }}
             className="relative w-full flex flex-col items-center overflow-hidden py-12 md:py-2 pl-8"

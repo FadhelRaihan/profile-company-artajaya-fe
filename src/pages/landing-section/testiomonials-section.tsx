@@ -5,28 +5,34 @@ import { motion } from "framer-motion";
 import SplitText from "@/components/split-text";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchActiveTestimoni } from "@/redux/testimoni/testimoniSlice"; 
-import type { RootState, AppDispatch } from "@/redux/store";
+import { useTestimoniActions, useTestimoniError, useTestimoniList, useTestimoniLoading } from "@/stores";
 
 const Testimoni: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { testimonials, loading, error } = useSelector(
-    (state: RootState) => state.testimoni
-  );
+  const testimonials = useTestimoniList();
+  const loading = useTestimoniLoading();
+  const error = useTestimoniError();
+  const { fetchActiveTestimoni } = useTestimoniActions();
 
   useEffect(() => {
-    if (!testimonials.length) {
-      dispatch(fetchActiveTestimoni());
+    if(!testimonials.length) {
+      fetchActiveTestimoni();
     }
-  }, [dispatch, testimonials.length]);
+  }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
+ if (loading) {
+    return (
+      <div className="relative w-full min-h-screen flex flex-col justify-center items-center">
+        <div className="text-blue-900 text-xl font-semibold">Loading...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Gagal mengambil data: {error}</div>;
+    return (
+      <div className="relative w-full min-h-screen flex flex-col justify-center items-center">
+        <div className="text-red-600 text-xl font-semibold">Gagal mengambil data: {error}</div>
+      </div>
+    );
   }
 
   // Normalize testimonials data

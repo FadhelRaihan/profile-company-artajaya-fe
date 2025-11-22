@@ -5,8 +5,9 @@ import { motion, AnimatePresence, useMotionValue, easeOut, animate } from "frame
 import { cn } from "../lib/utils";
 
 export interface ThreeDImageRingProps {
-  images: string[];
+  images: string[] | readonly string[];
   width?: number;
+  height?: number; // Added height prop for flexibility
   perspective?: number;
   imageDistance?: number;
   initialRotation?: number;
@@ -26,11 +27,14 @@ export interface ThreeDImageRingProps {
   inertiaVelocityMultiplier?: number;
   imageGap?: number;
   gapOffset?: number;
+  autoRotate?: boolean; // Added prop for auto-rotation
+  autoRotateInterval?: number; // Interval for auto-rotation in ms
 }
 
 export function ThreeDImageRing({
   images,
   width = 300,
+  height = 400, // Default height if not provided
   perspective = 2000,
   imageDistance = 500,
   initialRotation = 180,
@@ -48,6 +52,8 @@ export function ThreeDImageRing({
   inertiaTimeConstant = 300,
   inertiaVelocityMultiplier = 20,
   gapOffset = 0,
+  autoRotate = true, // Default to true
+  autoRotateInterval = 30, // Default auto-rotation speed in ms
 }: ThreeDImageRingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
@@ -57,6 +63,7 @@ export function ThreeDImageRing({
   const currentRotationY = useRef<number>(initialRotation);
   const isDragging = useRef<boolean>(false);
   const velocity = useRef<number>(0);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [currentScale, setCurrentScale] = useState(1);
   const [showImages, setShowImages] = useState(false);
@@ -104,6 +111,20 @@ export function ThreeDImageRing({
     setShowImages(true);
   }, []);
 
+  // Auto-rotation effect
+  useEffect(() => {
+    if (autoRotate) {
+      intervalRef.current = setInterval(() => {
+        rotationY.set(rotationY.get() + 0.2); // Adjust this value for speed of auto-rotation
+      }, autoRotateInterval);
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current); // Clear the interval when component unmounts or autoRotate changes
+        }
+      };
+    }
+  }, [autoRotate, autoRotateInterval]);
+
   const handleDragStart = (event: React.MouseEvent | React.TouchEvent) => {
     if (!draggable) return;
     isDragging.current = true;
@@ -118,6 +139,11 @@ export function ThreeDImageRing({
     document.addEventListener("mouseup", handleDragEnd);
     document.addEventListener("touchmove", handleDrag);
     document.addEventListener("touchend", handleDragEnd);
+
+    // Stop auto-rotation during drag
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current); // Clear auto-rotation interval during drag
+    }
   };
 
   const handleDrag = (event: MouseEvent | TouchEvent) => {
@@ -156,6 +182,13 @@ export function ThreeDImageRing({
     });
 
     velocity.current = 0;
+
+    // Restart auto-rotation after dragging ends
+    if (autoRotate) {
+      intervalRef.current = setInterval(() => {
+        rotationY.set(rotationY.get() + 0.2);
+      }, autoRotateInterval);
+    }
   };
 
   const imageVariants = {
@@ -188,7 +221,7 @@ export function ThreeDImageRing({
           className="relative"
           style={{
             width: `${width}px`,
-            height: `${width * 1.33}px`,
+            height: `${height}px`, // Make height configurable
             transformStyle: "preserve-3d",
           }}
         >
@@ -209,8 +242,8 @@ export function ThreeDImageRing({
                     className={cn("w-full h-full absolute", imageClassName)}
                     style={{
                       transformStyle: "preserve-3d",
-                      backgroundImage: `url(${imageUrl})`,
-                      backgroundSize: "fill",
+                      backgroundImage: imageUrl ? `url(${imageUrl})` : "none",
+                      backgroundSize: "cover", // Ensure cover behavior for background image
                       backgroundRepeat: "no-repeat",
                       backfaceVisibility: "hidden",
                       rotateY: index * -angle,
