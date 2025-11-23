@@ -15,9 +15,6 @@ const projects = projectsData.map(project => ({
 }));
 
 const ProjectKami: React.FC = () => {
-  const handleAnimationComplete = () => {
-    console.log("All letters have animated!");
-  };
 
   return (
     <div className="relative w-full min-h-screen flex flex-col py-20 md:py-24 lg:py-28">
@@ -28,7 +25,6 @@ const ProjectKami: React.FC = () => {
           <SplitText
             text="/ Proyek Kami"
             className="text-2xl font-medium text-center text-blue-900"
-            onLetterAnimationComplete={handleAnimationComplete}
           />
 
           {/* Headline utama */}
@@ -36,7 +32,7 @@ const ProjectKami: React.FC = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-center lg:text-left"
+            className="text-center lg:text-left relative"
           >
             <div className="leading-tight">
               <span className="block text-6xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-blue-900">

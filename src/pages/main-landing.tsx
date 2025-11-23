@@ -58,7 +58,7 @@ const ScrollIndicator = () => {
 };
 
 // ===================== LandingPage =====================
-const LandingPage: React.FC = () => {
+const Landing: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const location = useLocation();
 
@@ -162,4 +162,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage;
+export default Landing;

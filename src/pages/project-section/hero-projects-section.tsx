@@ -5,10 +5,6 @@ import React from "react";
 
 const MainProject: React.FC = () => {
 
-  const handleAnimationComplete = () => {
-    console.log("All letters have animated!");
-  };
-
   return (
     <div className="relative w-full flex flex-col justify-center items-center overflow-hidden">
       {/* Container untuk text - centered */}
@@ -18,7 +14,6 @@ const MainProject: React.FC = () => {
           <SplitText
             text="/ Project"
             className="text-2xl font-medium text-blue-900"
-            onLetterAnimationComplete={handleAnimationComplete}
             delay={300}
             duration={0.8}
             ease="power3.out"

@@ -4,9 +4,6 @@ import SplitText from "@/components/split-text";
 
 
 const Kontak: React.FC = () => {
-  const handleAnimationComplete = () => {
-    console.log("All letters have animated!");
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +18,6 @@ const Kontak: React.FC = () => {
         <SplitText
           text="/ Kontak Kami"
           className="text-xl md:text-2xl font-medium text-blue-900"
-          onLetterAnimationComplete={handleAnimationComplete}
         />
 
         {/* Headline utama */}

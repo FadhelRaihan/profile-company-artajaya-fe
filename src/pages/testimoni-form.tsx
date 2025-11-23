@@ -2,12 +2,6 @@ import Navbar from "@/components/navbar-profile";
 import SplitText from "@/components/split-text";
 import { motion } from "framer-motion";
 
-
-const handleAnimationComplete = () => {
-  console.log('All letters have animated!');
-};
-
-
 const TestimoniForm: React.FC = () => {
     
     return (
@@ -19,7 +13,6 @@ const TestimoniForm: React.FC = () => {
                     <SplitText
                         text="/ Proyek Kami"
                         className="text-2xl font-medium text-center text-blue-900"
-                        onLetterAnimationComplete={handleAnimationComplete}
                     />
                     {/* Headline utama */}
                     <motion.div

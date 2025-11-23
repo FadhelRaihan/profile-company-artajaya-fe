@@ -57,7 +57,7 @@ export const projectsData: Project[] = [
     location: "Jl. Soekarno Hatta, Bandung",
     year: "2022 - 2024",
     client: "Pemerintah Kota Bandung",
-    category: "Bangunan Gedung",
+    category: "Bangunan Gedung",  
     duration: "24 Bulan",
     value: "Rp 85 Miliar",
     images: [

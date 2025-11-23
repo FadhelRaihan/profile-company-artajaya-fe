@@ -88,33 +88,31 @@ const Navbar = () => {
     }
   }, [location]);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    closeMenu();
-  };
-
   // Fungsi untuk navigasi ke landing page dan scroll ke section
   const navigateToSection = (sectionId: string) => {
-    closeMenu();
-    handleNavClick();
-    
-    // Cek apakah sudah di halaman landing
-    if (location.pathname === '/landing') {
-      // Jika sudah di landing, langsung scroll
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      // Jika belum di landing, navigasi dulu dengan hash
-      navigate(`/landing#${sectionId}`);
-    }
-  };
+  closeMenu();
+  handleNavClick();
+  
+  // Cek apakah sudah di halaman landing
+  if (location.pathname === '/') {
+    // Jika sudah di landing, langsung scroll
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  } else {
+    // Jika belum di landing, navigasi ke landing tanpa hash dan scroll ke section
+    navigate(`/landing`);
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  }
+};
 
   return (
     <nav
@@ -135,7 +133,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center">
-        <Link to="/landing" onClick={() => {closeMenu(); handleNavClick();}}>
+        <Link to="/" onClick={() => {closeMenu(); handleNavClick();}}>
           <div className="w-full h-full px-5 py-2 bg-red-600 text-white flex items-center justify-center font-bold cursor-pointer">
             <img src={Icon} alt="icon" className="w-[30px]" />
           </div>
@@ -189,18 +187,17 @@ const Navbar = () => {
                   >
                     Projects
                   </a>
-                  <a
-                    href="/about"
+                  <button
                     className="text-2xl md:text-5xl font-semibold hover:text-[#B0C0DF] transition"
                     onClick={() => {
-                      closeMenu();
+                      navigateToSection('section3')
                       handleNavClick();
                     }}
                   >
                     Tentang Kami
-                  </a>
+                  </button>
                   <a
-                    href="/hero-ourteam"
+                    href="/team-activity-section"
                     onClick={() => { 
                       handleNavClick();
                     }}
