@@ -2,18 +2,66 @@ import SplitText from "@/components/split-text";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { ThreeDImageRing } from "@/components/lightswind/3d-image-ring";
 import Navbar from "@/components/navbar-profile";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin } from "lucide-react";
 import React, { useEffect, useState, useRef, type ReactElement } from "react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { ourTeamImage } from "@/assets/data/our-team";
-import { useKegiatanList, useKegiatanLoading, useKegiatanError, useKegiatanActions } from "@/stores";
+import { 
+  useKegiatanList, 
+  useKegiatanLoading, 
+  useKegiatanError, 
+  useKegiatanActions 
+} from "@/stores";
 import { errorHandling } from "@/utils/index";
+import type { Activities } from "@/types/index";
+
+// Helper function untuk fix dan validasi URL
+const fixPhotoUrl = (url: string | undefined, photoName: string | undefined, baseUrl: string): string => {
+  // Jika tidak ada URL sama sekali
+  if (!url && photoName) {
+    return `${baseUrl}/uploads/${photoName}`;
+  }
+  
+  if (!url) return '';
+
+  // Jika sudah absolute URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  // Fix relative URLs
+  if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
+    const cleanPath = url.startsWith('/') ? url : `/${url}`;
+    return `${baseUrl}${cleanPath}`;
+  }
+
+  // Jika hanya filename
+  if (!url.includes('/')) {
+    return `${baseUrl}/uploads/${url}`;
+  }
+
+  // Default
+  const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+  return `${baseUrl}${cleanUrl}`;
+};
+
+const isValidPhotoUrl = (url: string): boolean => {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url);
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 interface BentoItem {
   title: string;
   description: string;
   header: React.ReactNode;
   icon?: React.ReactNode;
+  location?: string;
+  date?: string;
 }
 
 type ScrollValues = {
@@ -56,16 +104,26 @@ const TeamActivitySection = () => {
 
   // Fetch data from backend on mount
   useEffect(() => {
+    console.log('🔄 Fetching active kegiatan...');
     fetchActiveKegiatan();
-  }, []);
+  }, [fetchActiveKegiatan]);
 
   // Handle error from store
   useEffect(() => {
     if (error) {
+      console.error('❌ Kegiatan error:', error);
       errorHandling.handleApiError({ message: error });
       clearError();
     }
-  }, [error]);
+  }, [error, clearError]);
+
+  // Debug: Log kegiatan data when it changes
+  useEffect(() => {
+    if (kegiatan && kegiatan.length > 0) {
+      console.log('✅ Kegiatan data loaded:', kegiatan.length);
+      console.log('📸 Sample kegiatan with photos:', kegiatan[0]);
+    }
+  }, [kegiatan]);
 
   // Setup Intersection Observer
   useEffect(() => {
@@ -89,41 +147,112 @@ const TeamActivitySection = () => {
   // Generate items from backend data
   useEffect(() => {
     if (kegiatan && kegiatan.length > 0) {
-      const mappedItems: BentoItem[] = kegiatan.map((activity, index) => {
-        // Ambil foto pertama dari array photos, atau gunakan default placeholder
-        const firstPhoto =
-          activity.photos?.[0]?.url ||
-          `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
+      // Get base URL from env or default
+      const baseUrl = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3000';
+      
+      const mappedItems: BentoItem[] = kegiatan.map((activity: Activities, index: number) => {
+        const placeholderUrl = `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
+        let photoUrl = placeholderUrl;
+        
+        if (activity.photos && activity.photos.length > 0) {
+          const firstPhoto = activity.photos[0];
+          
+          // Try to fix URL
+          const fixedUrl = fixPhotoUrl(firstPhoto.url, firstPhoto.photo_name, baseUrl);
+          
+          // Debug log
+          if (import.meta.env.DEV) {
+            console.group(`📸 ${activity.nama_kegiatan}`);
+            console.log('Photos count:', activity.photos.length);
+            console.log('Original URL:', firstPhoto.url);
+            console.log('Photo name:', firstPhoto.photo_name);
+            console.log('Fixed URL:', fixedUrl);
+            console.log('Is valid:', isValidPhotoUrl(fixedUrl));
+            console.groupEnd();
+          }
+          
+          // Use fixed URL if valid
+          if (fixedUrl && isValidPhotoUrl(fixedUrl)) {
+            photoUrl = fixedUrl;
+          } else {
+            console.warn(`⚠️ Invalid photo URL for "${activity.nama_kegiatan}":`, {
+              original: firstPhoto.url,
+              fixed: fixedUrl
+            });
+          }
+        } else {
+          console.warn(`⚠️ Kegiatan "${activity.nama_kegiatan}" has no photos, using placeholder`);
+        }
+
+        // Format tanggal
+        const formattedDate = new Date(activity.tanggal_kegiatan).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
 
         return {
           title: activity.nama_kegiatan,
           description: activity.deskripsi_singkat,
+          location: activity.lokasi_kegiatan,
+          date: formattedDate,
           header: (
             <div
               data-index={index}
-              className="relative h-full w-full overflow-hidden"
+              className="relative h-full w-full overflow-hidden group"
             >
               {visibleItems.has(index) ? (
                 <>
                   <img
-                    src={firstPhoto}
+                    src={photoUrl}
                     alt={activity.nama_kegiatan}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover/bento:scale-110"
+                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                     onError={(e) => {
-                      // Fallback jika image gagal
-                      (e.target as HTMLImageElement).src =
-                        `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
+                      const target = e.target as HTMLImageElement;
+                      const fallbackUrl = `https://picsum.photos/seed/${activity.kegiatanId}/800/600`;
+                      
+                      // Prevent infinite loop
+                      if (target.src !== fallbackUrl) {
+                        console.error(`❌ Failed to load image for: ${activity.nama_kegiatan}`);
+                        console.error(`   Original URL: ${photoUrl}`);
+                        console.error(`   Falling back to: ${fallbackUrl}`);
+                        target.src = fallbackUrl;
+                      }
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#003399] via-[#003399]/5 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <h3 className="font-bold text-lg mb-1 line-clamp-2">
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#003399]/90 via-[#003399]/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+                  
+                  {/* Content Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform transition-transform duration-300 group-hover:translate-y-[-8px]">
+                    <h3 className="font-bold text-xl mb-2 line-clamp-2 drop-shadow-lg">
                       {activity.nama_kegiatan}
                     </h3>
-                    <p className="text-sm opacity-90 line-clamp-2">
+                    <p className="text-sm opacity-90 line-clamp-2 mb-3 drop-shadow-md">
                       {activity.deskripsi_singkat}
                     </p>
+                    
+                    {/* Info Meta */}
+                    <div className="flex flex-col gap-1 text-xs opacity-80">
+                      {activity.lokasi_kegiatan && (
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5" />
+                          <span>{activity.lokasi_kegiatan}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>{formattedDate}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Photo Count Badge */}
+                    {activity.photos && activity.photos.length > 1 && (
+                      <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium">
+                        📸 {activity.photos.length} Foto
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (
@@ -135,6 +264,7 @@ const TeamActivitySection = () => {
       });
 
       setItems(mappedItems);
+      console.log('✅ Bento items generated:', mappedItems.length);
     }
   }, [kegiatan, visibleItems]);
 
@@ -148,8 +278,11 @@ const TeamActivitySection = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-blue-900 text-xl font-semibold">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-900 border-t-transparent mb-4"></div>
+          <p className="text-blue-900 text-xl font-semibold">Memuat Kegiatan...</p>
+        </div>
       </div>
     );
   }
@@ -169,7 +302,7 @@ const TeamActivitySection = () => {
                 <button
                   onClick={() => window.history.back()}
                   className="flex-shrink-0 p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer -translate-y-2 ml-[-12px] md:ml-0 md:-translate-y-3"
-                  aria-label="Kembali ke Projects"
+                  aria-label="Kembali ke halaman sebelumnya"
                 >
                   <ArrowLeft className="text-[#00297A] size-6 md:size-7 lg:size-8" />
                 </button>
@@ -215,19 +348,19 @@ const TeamActivitySection = () => {
               </div>
             </div>
             <ThreeDImageRing
-                images={ourTeamImage}
-                containerClassName="overflow-visible relative"
-                imageDistance={800}
-                width={300} // Pastikan ini sesuai dengan ukuran yang diinginkan untuk gambar
-                animationDuration={2}
-                hoverOpacity={1}
-                perspective={1400}
-                imageClassName="w-full h-full object-cover shadow-lg hover:scale-105 transition-transform duration-300" // Update untuk object-cover
-                gapOffset={0}
-              /> 
+              images={ourTeamImage}
+              containerClassName="overflow-visible relative"
+              imageDistance={800}
+              width={300}
+              animationDuration={2}
+              hoverOpacity={1}
+              perspective={1400}
+              imageClassName="w-full h-full object-cover shadow-lg hover:scale-105 transition-transform duration-300"
+              gapOffset={0}
+            /> 
           </motion.div>
+
           {/* Activities Section */}
-          
           <motion.div
             style={{ y: activitiesY }}
             className="relative w-full flex flex-col items-center overflow-hidden py-12 md:py-2 pl-8"
@@ -264,9 +397,15 @@ const TeamActivitySection = () => {
                   ))}
                 </BentoGrid>
               ) : (
-                <div className="mt-12 text-center text-gray-600">
-                  <p>Belum ada kegiatan yang tersedia</p>
-                </div>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mt-12 text-center text-gray-600 bg-gray-50 rounded-2xl p-12"
+                >
+                  <div className="text-6xl mb-4">📅</div>
+                  <p className="text-xl font-medium">Belum ada kegiatan yang tersedia</p>
+                  <p className="text-sm mt-2 opacity-75">Kegiatan akan ditampilkan di sini setelah ditambahkan</p>
+                </motion.div>
               )}
             </div>
           </motion.div>

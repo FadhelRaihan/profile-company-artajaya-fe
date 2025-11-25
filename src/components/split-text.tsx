@@ -31,6 +31,7 @@ export interface SplitTextProps {
   loop?: boolean;              // repeat forever
   loopDelay?: number;          // delay antar loop (seconds)
   yoyo?: boolean;              // reverse animation
+  animate?: boolean;
 }
 
 const SplitText: React.FC<SplitTextProps> = ({

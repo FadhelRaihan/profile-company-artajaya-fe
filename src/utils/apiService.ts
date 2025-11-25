@@ -1,13 +1,14 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import type { ApiError } from '../types';
 
-// Base URL
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+// ✅ PENTING: Ambil dari .env.local
+const VITE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+const API_BASE = VITE_API_URL.replace('/api/v1', '') || 'http://localhost:3000'; // Base tanpa /api/v1
 const TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 30000;
 
 // Axios instance
 const apiClient: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: VITE_API_URL,
   timeout: TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
@@ -15,10 +16,7 @@ const apiClient: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
-// =======================
 // REQUEST INTERCEPTOR
-// =======================
-// Interceptor untuk menambahkan Authorization header jika token ada
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -30,31 +28,10 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// =======================
 // RESPONSE INTERCEPTOR
-// =======================
 apiClient.interceptors.response.use(
-  (response) => {
-    if (import.meta.env.DEV) {
-      console.log('✅ API Response:', {
-        url: response.config.url,
-        status: response.status,
-        data: response.data,
-      });
-    }
-
-    return response;
-  },
-
+  (response) => response,
   (error: AxiosError<ApiError>) => {
-    if (import.meta.env.DEV) {
-      console.error('❌ API Error:', {
-        url: error.config?.url,
-        status: error.response?.status,
-        message: error.message,
-      });
-    }
-
     if (error.response) {
       const apiError: ApiError = {
         success: false,
@@ -63,12 +40,10 @@ apiClient.interceptors.response.use(
         statusCode: error.response.status,
       };
 
-      // 401 → token invalid → clear token
       if (error.response.status === 401) {
         localStorage.removeItem('token');
       }
 
-      // 429 → rate limit
       if (error.response.status === 429) {
         apiError.message = 'Terlalu banyak request. Silakan coba beberapa saat lagi.';
       }
@@ -92,9 +67,22 @@ apiClient.interceptors.response.use(
   }
 );
 
-// =======================
+// ✅ TAMBAH: Utility function untuk resolve image URL
+export const getImageUrl = (photoUrl: string | null | undefined): string => {
+  if (!photoUrl) {
+    return '/default-avatar.png'; // Fallback ke default avatar
+  }
+
+  // Jika sudah absolute URL, return as is
+  if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+    return photoUrl;
+  }
+
+  // Jika relative path, tambah base API URL
+  return `${API_BASE}${photoUrl.startsWith('/') ? photoUrl : '/' + photoUrl}`;
+};
+
 // GENERIC API WRAPPER
-// =======================
 export const api = {
   get: <T>(url: string, config?: AxiosRequestConfig) =>
     apiClient.get<T>(url, config).then((res) => res.data),
@@ -111,7 +99,11 @@ export const api = {
   delete: <T>(url: string, config?: AxiosRequestConfig) =>
     apiClient.delete<T>(url, config).then((res) => res.data),
 
-  upload: <T>(url: string, formData: FormData, onUploadProgress?: (progressEvent: any) => void) =>
+  upload: <T>(
+    url: string,
+    formData: FormData,
+    onUploadProgress?: (progressEvent: any) => void
+  ) =>
     apiClient
       .post<T>(url, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

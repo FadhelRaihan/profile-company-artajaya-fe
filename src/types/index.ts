@@ -32,25 +32,43 @@ export interface ProjectResponse {
 
 
 /**
-* Team Types
+* Employee/Team Member Types
 */
-export interface TeamMember {
+export interface EmployeeMember {
     id: string;
-    fullName: string;
-    position: string;
-    imageUrl: string;
-    createdAt: string;
-    updatedAt: string;
+    full_name: string;           // nama_lengkap
+    phoneNumber: string;        // no_telepon
+    email: string;
+    joinDate: string;           // masuk_kerja
+    positionId: string;         // id_jabatan
+    photo_url: string;           // photo
+    position?: Position;          // populated from position data
+    isActive: boolean;          // is_active
+    createdAt: string;          // created_at
+    updatedAt: string;          // updated_at
 }
 
-export interface TeamMemberResponse {
+export interface EmployeeMemberResponse {
     success: boolean;
-    data: TeamMember[];
+    data: EmployeeMember[];
     total: number;
 }
 /**
 * End Team Types
 */
+
+/**
+ * Position types
+ */
+export interface Position {
+  id: string;
+  name: string;
+  sort_order: number;
+  is_active: boolean;
+  created_by: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 
 /**
@@ -222,17 +240,18 @@ export interface ProjectsState {
 
 
 /**
-*Team State
+* Employee State
 */
-export interface TeamsState {
-    teams: TeamMember[];
+export interface EmployeeState {
+    employees: EmployeeMember[];
     loading: boolean;
     error: string | null;
     total: number;
-    position: string[];
+    positions: string[];
 }
+
 /**
-*End Team State
+*End Employee State
 */
 
 
@@ -300,13 +319,14 @@ export interface ProjectFilters {
 */
 
 /**
-*Teams Filters
+* Employee Filters
 */
-export interface TeamFilters {
+export interface EmployeeFilters {
     search?: string;
+    position?: string;
 }
 /**
-*End Team Filters
+*End Employee Filters
 */
 
 /**
@@ -368,3 +388,5 @@ export interface UploadPhotoResponse {
   message: string;
   data: ActivitiesPhotos[];
 }
+
+

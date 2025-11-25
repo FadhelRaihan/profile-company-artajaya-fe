@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import SplitText from "@/components/split-text";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import React from "react";
@@ -16,6 +16,9 @@ const projects = projectsData.map(project => ({
 
 const ProjectKami: React.FC = () => {
 
+    const ref = React.useRef(null);
+  const isInview = useInView(ref, { amount: 0.6 })
+
   return (
     <div className="relative w-full min-h-screen flex flex-col py-20 md:py-24 lg:py-28">
       {/* Container untuk text - dengan padding konsisten */}
@@ -23,8 +26,18 @@ const ProjectKami: React.FC = () => {
         <div className="max-w-7xl w-full">
           {/* Judul kecil */}
           <SplitText
-            text="/ Proyek Kami"
+            key={isInview ? "visible" : "hidden"}
+            text="/ Project Kami"
             className="text-2xl font-medium text-center text-blue-900"
+            delay={100}
+            duration={0.6}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.6}
+            rootMargin="-100px"
+            textAlign="center"
           />
 
           {/* Headline utama */}
