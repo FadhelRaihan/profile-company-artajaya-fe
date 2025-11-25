@@ -11,7 +11,7 @@
 // ============================================
 export { useKegiatanStore } from './kegiatan/kegiatanStore';
 export { useTestimoniStore } from './testimoni/testimoniStore';
-export { useTeamStore } from './team/teamStore';
+export { useEmployeeStore } from './team/employeeStore';
 
 // ============================================
 // KEGIATAN HOOKS
@@ -38,14 +38,16 @@ export {
   useTestimoniActions,
 } from './hooks';
 
+
 // ============================================
-// TEAM HOOKS
+// EMPLOYEE HOOKS
 // ============================================
 export {
-  useTeam,
-  useTeamLoading,
-  useTeamError,
-  useTeamList,
-  useTeamPositions,
-  useTeamActions,
+  useEmployee,
+  useEmployeeLoading,
+  useEmployeeError,
+  useEmployeeList,
+  useEmployeePositions,
+  useEmployeeTotal,
+  useEmployeeActions,
 } from './hooks';

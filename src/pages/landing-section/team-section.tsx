@@ -3,21 +3,21 @@ import { motion } from "framer-motion";
 import SplitText from "@/components/split-text";
 import ExpandedCard from "@/components/expanded-card";
 import { useEffect } from "react";
-import { useTeamActions, useTeamError, useTeamList, useTeamLoading } from "@/stores";
+import { useEmployeeActions, useEmployeeError, useEmployeeList, useEmployeeLoading } from "@/stores";
+import { getImageUrl } from "@/utils/apiService";
 
 const TimKami: React.FC = () => {
-  const teams = useTeamList();
-  const loading = useTeamLoading();
-  const error = useTeamError();
-  const { fetchActiveTeam } = useTeamActions();
+  const employees = useEmployeeList();
+  const loading = useEmployeeLoading();
+  const error = useEmployeeError();
+  const { fetchAllEmployee } = useEmployeeActions();
 
-useEffect(() => {
-  if (!teams.length) {
-    fetchActiveTeam();
-  }
-}, []);
+  //Fetch employee data
+   useEffect(() => {
+    fetchAllEmployee();
+  }, [fetchAllEmployee]); 
 
- if (loading) {
+  if (loading) {
     return (
       <div className="relative w-full min-h-screen flex flex-col justify-center items-center">
         <div className="text-blue-900 text-xl font-semibold">Loading...</div>
@@ -33,15 +33,27 @@ useEffect(() => {
     );
   }
 
-  //Transform data untuk Component card
-  const transformedMembers = teams.map(member => ({
-    name: member.fullName,
-    position: member.position,
-    image: member.imageUrl,
-  }));
+//transform photo_url
+  const transformedMembers = employees.map((member) => {
+    let positionName = 'Staff';
 
+    if (member.position) {
+      if (typeof member.position === 'string') {
+        positionName = member.position;
+      } else if (typeof member.position === 'object' && member.position.name) {
+        positionName = member.position.name;
+      }
+    }
 
+    const imageUrl = getImageUrl(member.photo_url);
 
+    return {
+      name: member.full_name || 'Nama Tidak Tersedia',
+      position: positionName,
+      image: imageUrl, 
+    };
+  });
+  
   return (
     <div className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28">
       {/* Container untuk text - centered */}

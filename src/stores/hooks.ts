@@ -6,7 +6,7 @@
 import { useShallow } from 'zustand/react/shallow';
 import { useKegiatanStore } from './kegiatan/kegiatanStore';
 import { useTestimoniStore } from './testimoni/testimoniStore';
-import { useTeamStore } from './team/teamStore';
+import { useEmployeeStore } from './team/employeeStore';
 
 // ============================================
 // KEGIATAN HOOKS
@@ -76,29 +76,35 @@ export const useTestimoniActions = () =>
 export const useTestimoni = () => useTestimoniStore();
 
 // ============================================
-// TEAM HOOKS
+// EMPLOYEE HOOKS
 // ============================================
 
-export const useTeamLoading = () =>
-  useTeamStore(useShallow((state) => state.loading));
+export const useEmployeeLoading = () =>
+  useEmployeeStore(useShallow((state) => state.loading));
 
-export const useTeamError = () =>
-  useTeamStore(useShallow((state) => state.error));
+export const useEmployeeError = () =>
+  useEmployeeStore(useShallow((state) => state.error));
 
-export const useTeamList = () =>
-  useTeamStore(useShallow((state) => state.teams));
+export const useEmployeeList = () =>
+  useEmployeeStore(useShallow((state) => state.employees));
 
-export const useTeamPositions = () =>
-  useTeamStore(useShallow((state) => state.position));
+export const useEmployeePositions = () =>
+  useEmployeeStore(useShallow((state) => state.positions));
 
-export const useTeamActions = () =>
-  useTeamStore(useShallow((state) => ({
-    fetchAllTeam: state.fetchAllTeam,
-    fetchActiveTeam: state.fetchActiveTeam,
+export const useEmployeeTotal = () =>
+  useEmployeeStore(useShallow((state) => state.total));
+
+export const useEmployeeActions = () =>
+  useEmployeeStore(useShallow((state) => ({
+    fetchAllEmployee: state.fetchAllEmployee,
+    fetchActiveEmployee: state.fetchActiveEmployee,
+    fetchInactiveEmployee: state.fetchInactiveEmployee,
+    fetchEmployeeById: state.fetchEmployeeById,
     clearError: state.clearError,
-    clearSelectedTeam: state.clearSelectedTeam,
+    clearEmployees: state.clearEmployees,
     filterByPosition: state.filterByPosition,
+    searchEmployee: state.searchEmployee,
   })));
 
-// Full hook
-export const useTeam = () => useTeamStore();
+// Full hook for components that need everything
+export const useEmployee = () => useEmployeeStore();
