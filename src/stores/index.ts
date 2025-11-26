@@ -12,6 +12,20 @@
 export { useKegiatanStore } from './kegiatan/kegiatanStore';
 export { useTestimoniStore } from './testimoni/testimoniStore';
 export { useEmployeeStore } from './team/employeeStore';
+export { useProjectStore } from './projects/reportStore';
+
+// ============================================
+// PROJECT HOOKS
+// ============================================
+export {
+  useProject,
+  useProjectLoading,
+  useProjectError,
+  useProjectList,
+  useProjectSelected,
+  useProjectTotal,
+  useProjectActions,
+} from './hooks';
 
 // ============================================
 // KEGIATAN HOOKS

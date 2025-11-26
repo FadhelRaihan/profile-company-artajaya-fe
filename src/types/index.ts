@@ -2,6 +2,57 @@
 // TYPESCRIPT INTERFACES (TYPES) ||
 //=================================
 
+// Tambahkan ke file types/index.ts yang sudah ada
+
+/**
+ * Project/Report Types
+ */
+export interface ProjectPhoto {
+  id: string;
+  report_id: string;
+  photo_name: string;
+  url: string;
+}
+
+export interface ProjectDetail {
+  id: string;
+  report_id: string;
+  detail_description: string;
+  start_date: string;
+  end_date: string;
+  location: string;
+  client: string;
+  service: string;
+  industry: string;
+}
+
+export interface Project {
+  id: string;
+  project_name: string;
+  description: string;
+  is_active: boolean;
+  created_by: string;
+  createdAt: string;
+  updatedAt: string;
+  photos?: ProjectPhoto[];
+  details?: ProjectDetail[];
+}
+
+export interface ProjectResponse {
+  success: boolean;
+  message: string;
+  data: Project[];
+  total?: number;
+  timestamp: string;
+}
+
+export interface ProjectDetailResponse {
+  success: boolean;
+  message: string;
+  data: Project;
+  timestamp: string;
+}
+
 
 /**
 * Employee/Team Member Types
@@ -188,8 +239,24 @@ export interface ApiError {
 
 
 // ====================
-// Redux State Types ||
+//  State Types ||
 // ====================
+
+/**
+ * Project State
+ */
+export interface ProjectState {
+  projects: Project[];
+  selectedProject: Project | null;
+  loading: boolean;
+  error: string | null;
+  total: number;
+}
+/**
+*End Projects State
+*/
+
+
 
 /**
 * Employee State

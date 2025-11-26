@@ -1,9 +1,30 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useMemo } from "react";
 import SplitText from "@/components/split-text";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+import { useProjectList, useProjectLoading, useProjectActions } from "@/stores";
+import { getFirstProjectPhotoUrl, getProjectLocation, getProjectCategory } from "@/utils/projectsUtils";
 
 const ProjectKami: React.FC = () => {
+  const projects = useProjectList();
+  const loading = useProjectLoading();
+  const { fetchActiveProjects } = useProjectActions();
+
+  useEffect(() => {
+    fetchActiveProjects();
+  }, [fetchActiveProjects]);
+
+  // Transform projects data untuk InfiniteMovingCards
+  const projectItems = useMemo(() => {
+    return projects.map((project) => ({
+      id: project.id,
+      image: getFirstProjectPhotoUrl(project),
+      title: project.project_name,
+      location: getProjectLocation(project),
+      category: getProjectCategory(project),
+    }));
+  }, [projects]);
 
   return (
     <div className="relative w-full min-h-screen flex flex-col py-20 md:py-24 lg:py-28">
@@ -12,18 +33,18 @@ const ProjectKami: React.FC = () => {
         <div className="max-w-7xl w-full">
           {/* Judul kecil */}
           <SplitText
-          text="/Project Kami"
-          className="text-2xl font-medium text-center text-blue-900"
-          delay={100}
-          duration={0.6}
-          ease="power3.out"
-          splitType="chars"
-          from={{ opacity: 0, y: 40 }}
-          to={{ opacity: 1, y: 0 }}
-          threshold={0.6}
-          rootMargin="-100px"
-          textAlign="center"
-        />
+            text="/Project Kami"
+            className="text-2xl font-medium text-center text-blue-900"
+            delay={100}
+            duration={0.6}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.6}
+            rootMargin="-100px"
+            textAlign="center"
+          />
 
           {/* Headline utama */}
           <motion.div
@@ -52,12 +73,23 @@ const ProjectKami: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
         className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
       >
-        <InfiniteMovingCards  
-          direction="left" 
-          speed="slow" 
-          fullWidth={true} 
-          className="rounded-none"
-        />
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900"></div>
+          </div>
+        ) : projectItems.length > 0 ? (
+          <InfiniteMovingCards
+            items={projectItems}
+            direction="left"
+            speed="slow"
+            fullWidth={true}
+            className="rounded-none"
+          />
+        ) : (
+          <div className="flex justify-center items-center py-20">
+            <p className="text-gray-500 text-lg">Tidak ada project tersedia</p>
+          </div>
+        )}
       </motion.div>
     </div>
   );

@@ -10,7 +10,7 @@ export const InfiniteMovingCards = ({
   fullWidth = false,
 }: {
   items: {
-    id: string; // ✅ UBAH dari number ke string (untuk UUID)
+    id: string;
     image?: string | null;
     title: string;
     location?: string;
@@ -94,9 +94,9 @@ export const InfiniteMovingCards = ({
           start && "animate-scroll"
         )}
       >
-        {items.map((item) => ( // ✅ HAPUS idx, gunakan item.id sebagai key
+        {items.map((item) => (
           <li
-            key={item.id} // ✅ UBAH dari idx ke item.id
+            key={item.id}
             className="relative w-[350px] md:w-[450px] shrink-0 overflow-hidden bg-white dark:bg-card shadow-sm group border"
           >
             <Link
@@ -104,7 +104,6 @@ export const InfiniteMovingCards = ({
               className="block h-full"
               data-project-id={item.id}
             >
-
               {/* Image Placeholder or Title Text */}
               <div className="relative h-48 w-full flex items-center justify-center bg-gray-100 dark:bg-neutral-800 overflow-hidden">
                 {item.image ? (
@@ -130,17 +129,22 @@ export const InfiniteMovingCards = ({
 
               {/* Info Section */}
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-blue-900 dark:text-white group-hover:text-white transition-colors duration-300">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-white group-hover:text-blue-700 transition-colors duration-300">
                   {item.title}
                 </h3>
-                <p className="text-sm text-neutral-600 dark:text-gray-300">
-                  {item.location || ''}
-                </p>
-                <p className="text-xs text-red-600 mt-1">
+                
+                {/* Location - tampilkan jika ada */}
+                {item.location && (
+                  <p className="text-sm text-neutral-600 dark:text-gray-300 mt-1">
+                    {item.location}
+                  </p>
+                )}
+                
+                {/* Category */}
+                <p className="text-xs text-red-600 mt-2 font-medium">
                   {item.category}
                 </p>
               </div>
-
             </Link>
           </li>
         ))}

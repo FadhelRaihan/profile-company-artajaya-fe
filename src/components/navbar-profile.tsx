@@ -10,14 +10,9 @@ import {
   CardDescription,
 } from "./ui/card";
 import Icon from '@/assets/icons/logo.png';
-import { projectsData } from "../assets/data/projects";
-
-interface Project {
-  id: string | number;
-  image: string;
-  title: string;
-  description: string;
-}
+import { useProjectList, useProjectActions } from '@/stores';
+import { getFirstProjectPhotoUrl } from '@/utils/projectsUtils';
+import type { Project } from '@/types';
 
 // Remove Scroll indicator while navbar is open
 const handleNavClick = () => {
@@ -25,7 +20,7 @@ const handleNavClick = () => {
 };
 
 const getRandomProjects = (arr: Project[], count: number): Project[] => {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random()) as Project[];
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 };
 
@@ -54,10 +49,22 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Get projects from store
+  const projects = useProjectList();
+  const { fetchActiveProjects } = useProjectActions();
+
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
 
-  const randomProjects = getRandomProjects(projectsData, 2);
+  // Fetch projects on mount if not loaded
+  useEffect(() => {
+    if (projects.length === 0) {
+      fetchActiveProjects().catch(console.error);
+    }
+  }, []);
+
+  // Get 2 random projects
+  const randomProjects = getRandomProjects(projects, 2);
 
   // Deteksi scroll
   useEffect(() => {
@@ -90,29 +97,35 @@ const Navbar = () => {
 
   // Fungsi untuk navigasi ke landing page dan scroll ke section
   const navigateToSection = (sectionId: string) => {
-  closeMenu();
-  handleNavClick();
-  
-  // Cek apakah sudah di halaman landing
-  if (location.pathname === '/') {
-    // Jika sudah di landing, langsung scroll
-    setTimeout(() => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  } else {
-    // Jika belum di landing, navigasi ke landing tanpa hash dan scroll ke section
-    navigate(`/landing`);
-    setTimeout(() => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  }
-};
+    closeMenu();
+    handleNavClick();
+    
+    // Cek apakah sudah di halaman landing
+    if (location.pathname === '/') {
+      // Jika sudah di landing, langsung scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // Jika belum di landing, navigasi ke landing tanpa hash dan scroll ke section
+      navigate(`/landing`);
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
+
+  // Truncate description to max 100 characters
+  const truncateText = (text: string, maxLength: number = 100): string => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
+  };
 
   return (
     <nav
@@ -221,46 +234,52 @@ const Navbar = () => {
                 </div>
               </div>
 
-              {/* Project Cards dengan Link ke Detail */}
+              {/* Project Cards dengan Link ke Detail - Data dari Backend */}
               <div className="grid grid-cols-2 gap-8">
-                {randomProjects.map((project) => (
-                  <Link
-                    key={project.id}
-                    to={`/project/${project.id}`}
-                    onClick={closeMenu}
-                    className="block"
-                  >
-                    <Card
-                      className="w-72 max-w-sm overflow-hidden hidden bg-transparent border-none shadow-none md:block"
+                {randomProjects.map((project) => {
+                  const imageUrl = getFirstProjectPhotoUrl(project);
+                  
+                  return (
+                    <Link
+                      key={project.id}
+                      to={`/project/${project.id}`}
+                      onClick={closeMenu}
+                      className="block"
                     >
-                      {/* Gambar */}
-                      <div className="w-72 overflow-hidden mb-5">
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="w-full object-cover transition-transform duration-300 hover:scale-125"
-                        />
-                      </div>
+                      <Card className="w-72 max-w-sm overflow-hidden hidden bg-transparent border-none shadow-none md:block">
+                        {/* Gambar */}
+                        <div className="w-72 h-48 overflow-hidden mb-5">
+                          <img
+                            src={imageUrl}
+                            alt={project.project_name}
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-125"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = `https://picsum.photos/seed/${project.id}/800/600`;
+                            }}
+                          />
+                        </div>
 
-                      {/* Header */}
-                      <CardHeader className="flex flex-col gap-0">
-                        <CardDescription className="text-xs font-medium uppercase tracking-wide text-[#000000]">
-                          Project Terbaru
-                        </CardDescription>
-                        <CardTitle className="text-xl font-bold">
-                          {project.title}
-                        </CardTitle>
-                      </CardHeader>
+                        {/* Header */}
+                        <CardHeader className="flex flex-col gap-0">
+                          <CardDescription className="text-xs font-medium uppercase tracking-wide text-[#000000]">
+                            Project Terbaru
+                          </CardDescription>
+                          <CardTitle className="text-xl font-bold">
+                            {project.project_name}
+                          </CardTitle>
+                        </CardHeader>
 
-                      {/* Content */}
-                      <CardContent>
-                        <p className="text-[#000000] text-sm leading-relaxed text-justify">
-                          {project.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
+                        {/* Content */}
+                        <CardContent>
+                          <p className="text-[#000000] text-sm leading-relaxed text-justify">
+                            {truncateText(project.description, 100)}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </motion.div>

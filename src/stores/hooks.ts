@@ -7,6 +7,32 @@ import { useShallow } from 'zustand/react/shallow';
 import { useKegiatanStore } from './kegiatan/kegiatanStore';
 import { useTestimoniStore } from './testimoni/testimoniStore';
 import { useEmployeeStore } from './team/employeeStore';
+import { useProjectStore } from './projects/reportStore';
+
+// ============================================
+// PROJECT HOOKS
+// ============================================
+export const useProjectLoading = () =>
+  useProjectStore(useShallow((state) => state.loading));
+
+export const useProjectError = () =>
+  useProjectStore(useShallow((state) => state.error));
+
+export const useProjectList = () =>
+  useProjectStore(useShallow((state) => state.projects));
+
+export const useProjectSelected = () =>
+  useProjectStore(useShallow((state) => state.selectedProject));
+
+export const useProjectTotal = () =>
+  useProjectStore(useShallow((state) => state.total));
+
+export const useProjectActions = () =>
+  useProjectStore(useShallow((state) => ({
+    fetchActiveProjects: state.fetchActiveProjects,
+})));
+// Full hook for components that need everything
+export const useProject = () => useProjectStore();
 
 // ============================================
 // KEGIATAN HOOKS

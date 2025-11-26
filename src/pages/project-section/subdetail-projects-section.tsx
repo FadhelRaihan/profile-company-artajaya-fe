@@ -1,10 +1,7 @@
-
 "use client";
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
-import { projectsData } from "@/assets/data/projects";
 import { ArrowLeft, ArrowUp, Phone } from "lucide-react";
 import Navbar from "@/components/navbar-profile";
 import { Separator } from "@/components/ui/separator";
@@ -16,17 +13,34 @@ import {
 } from "@/components/ui/carousel";
 import { useInView } from 'react-intersection-observer';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useProjectList, useProjectActions, useProjectLoading } from '@/stores';
+import { getAllProjectPhotoUrls, getProjectLocation, getProjectCategory } from '@/utils/projectsUtils';
+import { handleApiError } from '@/utils/errorHandling';
 
 const SubDetailProject: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const projectId = Number(id);
+  const { projectId } = useParams<{ projectId: string }>();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  //Animate next/prev projects
+  // Get data from store
+  const projects = useProjectList();
+  const loading = useProjectLoading();
+  const { fetchActiveProjects } = useProjectActions();
+
+  // Fetch projects on mount if not loaded
+  useEffect(() => {
+    if (projects.length === 0) {
+      fetchActiveProjects().catch(handleApiError);
+    }
+  }, []);
+
+  // Find current project
+  const project = projects.find((p) => p.id === projectId);
+
+  // Animation variants
   const pageVariants = {
     hidden: { opacity: 0, y: 40 },
     visible: { 
@@ -41,7 +55,6 @@ const SubDetailProject: React.FC = () => {
     },
   };
 
- // Variants for animation
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: { 
@@ -66,9 +79,7 @@ const SubDetailProject: React.FC = () => {
   const [ctaRef, ctaInView] = useInView({ triggerOnce: true, threshold: 0.1 });
   const [relatedRef, relatedInView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
-  const project = projectsData.find((p) => p.id === projectId);
-
-  //Carousel autoplay effect
+  // Carousel autoplay effect
   useEffect(() => {
     if (!api || !project) return;
 
@@ -79,7 +90,7 @@ const SubDetailProject: React.FC = () => {
     return () => clearInterval(interval);
   }, [api, project]);
 
-  //tracking current slide
+  // Tracking current slide
   useEffect(() => {
     if (!api) return;
 
@@ -96,17 +107,47 @@ const SubDetailProject: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-  //Handle navigate pages
-  const handleNavigate = (targetId: number) => {
-    setIsTransitioning(true); // aktifkan animasi keluar
+  // Handle navigate pages
+  const handleNavigate = (targetId: string) => {
+    setIsTransitioning(true);
     setTimeout(() => {
       navigate(`/project/${targetId}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
       setIsTransitioning(false);
-    }, 400); // sesuai durasi animasi keluar
+    }, 400);
   };
 
+  // Get project images
+  const projectImages = project ? getAllProjectPhotoUrls(project) : [];
+  
+  // Get project details
+  const projectDetail = project?.details?.[0];
+  const projectLocation = project ? getProjectLocation(project) : '';
+  const projectCategory = project ? getProjectCategory(project) : '';
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003399] mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat data project...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Project not found
   if (!project) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center px-4">
@@ -125,6 +166,16 @@ const SubDetailProject: React.FC = () => {
       </div>
     );
   }
+
+  // Get current project index
+  const currentIndex = projects.findIndex((p) => p.id === projectId);
+  const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : projects[projects.length - 1];
+  const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0];
+
+  // Get related projects (exclude current)
+  const relatedProjects = projects
+    .filter((p) => p.id !== projectId)
+    .slice(0, 2);
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -146,20 +197,16 @@ const SubDetailProject: React.FC = () => {
               className="mt-8 mb-8"
             >
               <div className="flex items-start gap-3 md:gap-4">
-                {/* Back Button - now visible on all screens, positioned beside title */}
                 <button
-                  onClick={() => {
-                    navigate("/project-pages");
-                  }}
+                  onClick={() => navigate("/project-pages")}
                   className="flex-shrink-0 p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer mt-1"
                   aria-label="Kembali ke Projects"
                 >
                   <ArrowLeft className="text-[#00297A] size-6 md:size-7 lg:size-8" />
                 </button>
                 
-                {/* Title */}
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] leading-tight">
-                  {project.title}
+                  {project.project_name}
                 </h1>
               </div>
               <Separator className="my-4 h-1 bg-gray-700"/>
@@ -168,7 +215,7 @@ const SubDetailProject: React.FC = () => {
         </div>
 
         {/* Carousel */}
-        <div ref={carouselRef} className="relative w-full h-[260px] md:h-[360px] lg:h-[420px] rounded-none overflow-hidden shadow-md mb-8" >
+        <div ref={carouselRef} className="relative w-full h-[260px] md:h-[360px] lg:h-[420px] rounded-none overflow-hidden shadow-md mb-8">
           {carouselInView && (
             <motion.div
               initial="hidden"
@@ -176,30 +223,30 @@ const SubDetailProject: React.FC = () => {
               variants={fadeInUp}
             >
               <Carousel
-              setApi={setApi}
-                opts={{ align: "start", loop:true }}
+                setApi={setApi}
+                opts={{ align: "start", loop: true }}
                 className="w-full"
               >
                 <CarouselContent className="-ml-0">
-                  {project.images.map((image, index) => (
+                  {projectImages.map((image, index) => (
                     <CarouselItem key={index} className="pl-0 basis-full">
                       <div className="relative w-full h-[350px] md:h-[500px] lg:h-[600px] rounded-none overflow-hidden shadow-lg">
-                      <AnimatePresence mode="wait">
-                        {current === index && (
-                          <motion.img
-                          key={index}
-                          src={image}
-                          alt={`${project.title} - Image ${index + 1}`}
-                          className="w-full h-full object-cover"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity:1 }}
-                          exit={{ opacity:0 }}
-                          transition={{ duration: 0.5 }}
-                          />
-                      )}
-                      </AnimatePresence>
+                        <AnimatePresence mode="wait">
+                          {current === index && (
+                            <motion.img
+                              key={index}
+                              src={image}
+                              alt={`${project.project_name} - Image ${index + 1}`}
+                              className="w-full h-full object-cover"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.5 }}
+                            />
+                          )}
+                        </AnimatePresence>
                         <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
-                          {index + 1} / {project.images.length}
+                          {index + 1} / {projectImages.length}
                         </div>
                       </div>
                     </CarouselItem>
@@ -223,10 +270,14 @@ const SubDetailProject: React.FC = () => {
               </h2>
               <div className="space-y-4 border-t border-gray-200">
                 {[
-                  { label: "Klien", value: project.client },
-                  { label: "Industri", value: project.category },
-                  { label: "Pelayanan", value: project.category },
-                  { label: "Lokasi", value: project.location }
+                  { label: "Klien", value: projectDetail?.client || "N/A" },
+                  { label: "Industri", value: projectDetail?.industry || projectCategory },
+                  { label: "Pelayanan", value: projectDetail?.service || projectCategory },
+                  { label: "Lokasi", value: projectDetail?.location || projectLocation },
+                  ...(projectDetail?.start_date ? [{ 
+                    label: "Periode", 
+                    value: `${formatDate(projectDetail.start_date)} - ${formatDate(projectDetail.end_date)}` 
+                  }] : [])
                 ].map((item, idx) => (
                   <div
                     key={idx}
@@ -245,7 +296,7 @@ const SubDetailProject: React.FC = () => {
           )}
         </div>
 
-        {/* About Section - Right aligned with max width */}
+        {/* About Section */}
         <div ref={aboutRef}>
           {aboutInView && (
             <motion.div
@@ -258,12 +309,22 @@ const SubDetailProject: React.FC = () => {
               </h2>
               <Separator className="my-4 h-1 bg-gray-700" />
               
-              {/* Content wrapper with left space */}
               <div className="flex justify-end">
                 <div className="w-full md:w-4/5 lg:w-3/4 text-gray-600 leading-relaxed text-justify">
+                  {/* Main description */}
                   {project.description.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="mb-2">{paragraph}</p>
+                    <p key={`desc-${index}`} className="mb-4">{paragraph}</p>
                   ))}
+                  
+                  {/* Detail description if exists */}
+                  {projectDetail?.detail_description && (
+                    <>
+                      <p className="mb-4 mt-6 font-semibold text-[#003399]">Detail Project:</p>
+                      {projectDetail.detail_description.split('\n\n').map((paragraph, index) => (
+                        <p key={`detail-${index}`} className="mb-4">{paragraph}</p>
+                      ))}
+                    </>
+                  )}
                 </div>
               </div>
               
@@ -272,7 +333,7 @@ const SubDetailProject: React.FC = () => {
           )}
         </div>
 
-        {/**Navigation buttons */}
+        {/* Navigation buttons */}
         <div ref={navRef} className="mb-2 py-8">
           {navInView && (
             <motion.div
@@ -282,19 +343,13 @@ const SubDetailProject: React.FC = () => {
               className="flex justify-between items-center"
             >
               <button
-                onClick={() => {
-                  const prevId = projectId > 1 ? projectId - 1 : projectsData.length;
-                  handleNavigate(prevId);
-                }}
+                onClick={() => handleNavigate(prevProject.id)}
                 className="text-[#003399] hover:text-[#002266] font-semibold text-lg flex items-center gap-2 transition-colors underline"
               >
                 ← Project Sebelumnya
               </button>
               <button
-                onClick={() => {
-                  const nextId = projectId < projectsData.length ? projectId + 1 : 1;
-                  handleNavigate(nextId);
-                }}
+                onClick={() => handleNavigate(nextProject.id)}
                 className="text-[#003399] hover:text-[#002266] font-semibold text-lg flex items-center gap-2 transition-colors underline"
               >
                 Project Selanjutnya →
@@ -344,10 +399,9 @@ const SubDetailProject: React.FC = () => {
               </h2>
               <Separator className="my-4 h-1 bg-gray-700" />
               <div className="grid md:grid-cols-2 gap-6">
-                {projectsData
-                  .filter((p) => p.id !== projectId)
-                  .slice(0, 2)
-                  .map((relatedProject) => (
+                {relatedProjects.map((relatedProject) => {
+                  const relatedImages = getAllProjectPhotoUrls(relatedProject);
+                  return (
                     <div
                       key={relatedProject.id}
                       className="group cursor-pointer"
@@ -358,17 +412,18 @@ const SubDetailProject: React.FC = () => {
                     >
                       <div className="relative h-[300px] md:h-[400px] rounded-none overflow-hidden shadow-lg mb-4">
                         <img
-                          src={relatedProject.image}
-                          alt={relatedProject.title}
+                          src={relatedImages[0]}
+                          alt={relatedProject.project_name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       </div>
                       <h3 className="text-xl font-medium text-[#003399] group-hover:text-[#002266] transition-colors">
-                        {relatedProject.title}
+                        {relatedProject.project_name}
                       </h3>
                     </div>
-                  ))}
+                  );
+                })}
               </div>
             </motion.div>
           )}

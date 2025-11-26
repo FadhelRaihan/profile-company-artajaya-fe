@@ -2,12 +2,16 @@
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence, useMotionValue, easeOut, animate } from "framer-motion";
-import { cn } from "../lib/utils";
+
+// Utility function untuk className
+const cn = (...classes: (string | undefined | false)[]) => {
+  return classes.filter(Boolean).join(' ');
+};
 
 export interface ThreeDImageRingProps {
   images: string[] | readonly string[];
   width?: number;
-  height?: number; // Added height prop for flexibility
+  height?: number;
   perspective?: number;
   imageDistance?: number;
   initialRotation?: number;
@@ -27,16 +31,16 @@ export interface ThreeDImageRingProps {
   inertiaVelocityMultiplier?: number;
   imageGap?: number;
   gapOffset?: number;
-  autoRotate?: boolean; // Added prop for auto-rotation
-  autoRotateInterval?: number; // Interval for auto-rotation in ms
+  autoRotate?: boolean;
+  autoRotateInterval?: number;
 }
 
 export function ThreeDImageRing({
   images,
-  width = 300,
-  height = 400, // Default height if not provided
-  perspective = 2000,
-  imageDistance = 500,
+  width = 280,
+  height = 360,
+  perspective = 1800,
+  imageDistance = 450, // Dikurangi dari 500 ke 450
   initialRotation = 180,
   animationDuration = 1.5,
   staggerDelay = 0.1,
@@ -52,8 +56,8 @@ export function ThreeDImageRing({
   inertiaTimeConstant = 300,
   inertiaVelocityMultiplier = 20,
   gapOffset = 0,
-  autoRotate = true, // Default to true
-  autoRotateInterval = 30, // Default auto-rotation speed in ms
+  autoRotate = true,
+  autoRotateInterval = 30,
 }: ThreeDImageRingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
@@ -63,7 +67,7 @@ export function ThreeDImageRing({
   const currentRotationY = useRef<number>(initialRotation);
   const isDragging = useRef<boolean>(false);
   const velocity = useRef<number>(0);
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [currentScale, setCurrentScale] = useState(1);
   const [showImages, setShowImages] = useState(false);
@@ -77,7 +81,7 @@ export function ThreeDImageRing({
     const scaledImageDistance = imageDistance * scale;
     const effectiveRotation = currentRot - 180 - imageIndex * angle;
     const parallaxOffset = ((effectiveRotation % 360 + 360) % 360) / 360;
-    return `${-(parallaxOffset * (scaledImageDistance / 1.5))}px 0px`;
+    return `${-(parallaxOffset * (scaledImageDistance / 2))}px 0px`; // Dikurangi dari 1.5 ke 2
   };
 
   useEffect(() => {
@@ -115,11 +119,11 @@ export function ThreeDImageRing({
   useEffect(() => {
     if (autoRotate) {
       intervalRef.current = setInterval(() => {
-        rotationY.set(rotationY.get() + 0.2); // Adjust this value for speed of auto-rotation
+        rotationY.set(rotationY.get() + 0.2);
       }, autoRotateInterval);
       return () => {
         if (intervalRef.current) {
-          clearInterval(intervalRef.current); // Clear the interval when component unmounts or autoRotate changes
+          clearInterval(intervalRef.current);
         }
       };
     }
@@ -140,9 +144,8 @@ export function ThreeDImageRing({
     document.addEventListener("touchmove", handleDrag);
     document.addEventListener("touchend", handleDragEnd);
 
-    // Stop auto-rotation during drag
     if (intervalRef.current) {
-      clearInterval(intervalRef.current); // Clear auto-rotation interval during drag
+      clearInterval(intervalRef.current);
     }
   };
 
@@ -183,7 +186,6 @@ export function ThreeDImageRing({
 
     velocity.current = 0;
 
-    // Restart auto-rotation after dragging ends
     if (autoRotate) {
       intervalRef.current = setInterval(() => {
         rotationY.set(rotationY.get() + 0.2);
@@ -200,28 +202,26 @@ export function ThreeDImageRing({
     <div
       ref={containerRef}
       className={cn(
-        "w-full h-full overflow-hidden select-none relative", // ✅ overflow-hidden biar gak bisa geser
+        "w-full h-full overflow-hidden select-none relative",
         containerClassName
       )}
       style={{
         backgroundColor,
         transform: `scale(${currentScale})`,
         transformOrigin: "center center",
-        clipPath: "inset(0 0 0 0)", // ✅ DITAMBAHKAN — memastikan elemen yang keluar viewport dipotong
       }}
       onMouseDown={draggable ? handleDragStart : undefined}
       onTouchStart={draggable ? handleDragStart : undefined}
     >
-      {/* ✅ DITAMBAHKAN WRAPPER BARU: scene container */}
       <div
-        className="relative w-full h-full flex items-center justify-center overflow-hidden" // ✅ overflow-hidden lagi untuk layer 3D
+        className="relative w-full h-full flex items-center justify-center overflow-hidden"
         style={{ perspective: `${perspective}px` }}
       >
         <div
           className="relative"
           style={{
             width: `${width}px`,
-            height: `${height}px`, // Make height configurable
+            height: `${height}px`,
             transformStyle: "preserve-3d",
           }}
         >
@@ -239,17 +239,18 @@ export function ThreeDImageRing({
                 images.map((imageUrl, index) => (
                   <motion.div
                     key={index}
-                    className={cn("w-full h-full absolute", imageClassName)}
+                    className={cn("w-full h-full absolute rounded-2xl overflow-hidden", imageClassName)}
                     style={{
                       transformStyle: "preserve-3d",
                       backgroundImage: imageUrl ? `url(${imageUrl})` : "none",
-                      backgroundSize: "cover", // Ensure cover behavior for background image
+                      backgroundSize: "cover",
+                      backgroundPosition: "center center", // Diubah untuk center foto
                       backgroundRepeat: "no-repeat",
                       backfaceVisibility: "hidden",
                       rotateY: index * -angle,
                       z: -imageDistance * currentScale,
                       transformOrigin: `50% 50% ${imageDistance * currentScale}px`,
-                      backgroundPosition: getBgPos(index, currentRotationY.current, currentScale),
+                      boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
                     }}
                     initial="hidden"
                     animate="visible"
