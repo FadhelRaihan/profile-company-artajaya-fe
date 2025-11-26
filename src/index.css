@@ -39,6 +39,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+  --animate-aurora: aurora 60s linear infinite;
+  @keyframes aurora {
+  from {
+    backgroundPosition: 50% 50%, 50% 50%;
+    }
+  to {
+    backgroundPosition: 350% 50%, 350% 50%;
+    }
+  }
 }
 
 :root {
@@ -137,4 +147,47 @@ section {
   body {
     @apply bg-background text-foreground;
   }
+ @keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50%));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s) linear infinite;
+  animation-direction: var(--animation-direction, forwards);
+}
+
+.clip-path-curved {
+  clip-path: ellipse(100% 80% at 50% 50%);
+  /* atau untuk lengkungan lebih detail */
+  clip-path: path('M 0,0 Q 50,20 100,0 L 100,100 L 0,100 Z');
+}
+
+.hover\:paused:hover {
+  animation-play-state: paused;
+}
+
+.animate-scroll > li {
+  pointer-events: auto;
+  animation: scroll var(--animation-duration, 60s)
+  var(--animation-direction, forwards) linear infinite;
+}
+/* Scale-up efek smooth */
+.animate-scroll > li:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  transition: transform 0.3s ease-in-out;
+}
+
 }
