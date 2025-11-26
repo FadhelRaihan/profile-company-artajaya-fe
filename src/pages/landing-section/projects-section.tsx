@@ -1,23 +1,9 @@
 "use client";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import SplitText from "@/components/split-text";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import React from "react";
-import { projectsData } from "@/assets/data/projects";
-
-// Data proyek dengan gambar
-const projects = projectsData.map(project => ({
-  id: project.id,
-  image: project.image,
-  title: project.title,
-  location: project.location,
-  category: project.category,
-}));
 
 const ProjectKami: React.FC = () => {
-
-    const ref = React.useRef(null);
-  const isInview = useInView(ref, { amount: 0.6 })
 
   return (
     <div className="relative w-full min-h-screen flex flex-col py-20 md:py-24 lg:py-28">
@@ -26,19 +12,18 @@ const ProjectKami: React.FC = () => {
         <div className="max-w-7xl w-full">
           {/* Judul kecil */}
           <SplitText
-            key={isInview ? "visible" : "hidden"}
-            text="/ Project Kami"
-            className="text-2xl font-medium text-center text-blue-900"
-            delay={100}
-            duration={0.6}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.6}
-            rootMargin="-100px"
-            textAlign="center"
-          />
+          text="/Project Kami"
+          className="text-2xl font-medium text-center text-blue-900"
+          delay={100}
+          duration={0.6}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 40 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.6}
+          rootMargin="-100px"
+          textAlign="center"
+        />
 
           {/* Headline utama */}
           <motion.div
@@ -67,8 +52,7 @@ const ProjectKami: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
         className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
       >
-        <InfiniteMovingCards 
-          items={projects} 
+        <InfiniteMovingCards  
           direction="left" 
           speed="slow" 
           fullWidth={true} 

@@ -1,9 +1,18 @@
 import { motion } from "framer-motion";
 
 const VissionMissionLanding = () => {
+  const missionList = [
+    "Berpartisipasi dalam pembangunan melalui jasa di bidang General Contractor, Trading, Supplier, Civil Work.",
+    "Menyediakan jasa di bidang General Contractor, Trading, Supplier, Civil Work yang dapat memberikan nilai tambah bagi stakeholder.",
+    "Memberikan pelayanan dengan sikap profesional dan memenuhi standar kesehatan, keselamatan kerja dan perlindungan lingkungan.",
+    "Menjalin hubungan yang berkelanjutan (kontinuitas) dan bekerja sama untuk meningkatkan kinerja dan pelayanan terbaik.",
+    "Meningkatkan mutu dan kualitas SDM untuk menjadi perusahaan yang mampu memberikan pelayanan jasa terbaik."
+  ];
+
   return (
-    <div className="relative min-h-screen w-full flex flex-col gap-16 md:gap-20 lg:gap-24 items-center justify-center py-20 md:py-24 lg:py-28 px-6 md:px-12 lg:px-16 xl:px-20">
-      {/* Visi - Slide from Left to Right */}
+    <div className="relative min-h-screen w-full flex flex-col gap-16 md:gap-20 lg:gap-4 items-center justify-center py-20 md:py-24 lg:py-28 px-6 md:px-12 lg:px-16 xl:px-20 mt-12">
+      
+      {/* Visi */}
       <motion.div 
         initial={{ opacity: 0, x: -100 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -11,15 +20,16 @@ const VissionMissionLanding = () => {
         transition={{ duration: 1, ease: "easeOut" }}
         className="max-w-7xl w-full text-center lg:text-left"
       >
-        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-4">
+        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-2">
           Visi
         </h3>
-        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#003399] leading-relaxed md:leading-loose">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        <p className="text-sm sm:text-base md:text-lg lg:text-lg text-[#003399] leading-relaxed md:leading-loose">
+          "Menjadi perusahaan jasa di bidang General Contractor, Trading, Supplier, Civil Work  
+          yang terpercaya dan dapat diandalkan".
         </p>
       </motion.div>
 
-      {/* Misi - Slide from Right to Left */}
+      {/* Misi */}
       <motion.div 
         initial={{ opacity: 0, x: 100 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -27,13 +37,20 @@ const VissionMissionLanding = () => {
         transition={{ duration: 1, ease: "easeOut" }}
         className="max-w-7xl w-full text-center lg:text-left"
       >
-        <h3 className="text-right text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-4">
+        <h3 className="text-right text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#003399] mb-2">
           Misi
         </h3>
-        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#003399] leading-relaxed md:leading-loose">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est mauris placerat eleifend leo.
-        </p>
+
+        <ul className="space-y-4 text-sm sm:text-base md:text-lg lg:text-lg text-[#003399] leading-relaxed md:leading-loose text-left">
+          {missionList.map((item, index) => (
+            <li key={index} className="flex gap-3">
+              <span className="font-bold text-[#003399]">❖</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
       </motion.div>
+
     </div>
   );
 };

@@ -37,25 +37,31 @@ const TimKami: React.FC = () => {
   }
 
 //transform photo_url
-  const transformedMembers = employees.map((member) => {
-    let positionName = 'Staff';
+  const transformedMembers = employees
+  .map((member) => {
+    let positionName = "Staff";
+    let positionOrder = 999;
 
     if (member.position) {
-      if (typeof member.position === 'string') {
+      if (typeof member.position === "string") {
         positionName = member.position;
-      } else if (typeof member.position === 'object' && member.position.name) {
-        positionName = member.position.name;
+      } else if (typeof member.position === "object") {
+        positionName = member.position.name || "staff";
+        positionOrder = member.position.sort_order ?? 999;
       }
     }
 
     const imageUrl = getImageUrl(member.photo_url);
 
     return {
-      name: member.full_name || 'Nama Tidak Tersedia',
+      name : member.full_name,
       position: positionName,
-      image: imageUrl, 
+      order: positionOrder,
+      image: imageUrl,
     };
-  });
+  })
+  .filter((member) => member.order >= 1 && member.order <= 5)
+  .sort((a, b) => a.order - b.order)
   
   return (
     <div ref={ref} className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28">
