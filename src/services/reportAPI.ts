@@ -1,5 +1,5 @@
 import { api } from "@/utils/apiService";
-import type { ProjectResponse } from "@/types";
+import type { ProjectResponse } from "@/stores/projects/reportStore";
 
 export const ProjectService = {
     /**

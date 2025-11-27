@@ -3,7 +3,7 @@ import type {
   ActivitiesResponse, 
   ActivitiesDetailResponse,
   ActivitiesFilters 
-} from '@/types/index';
+} from '@/stores/kegiatan/kegiatanStore';
 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;

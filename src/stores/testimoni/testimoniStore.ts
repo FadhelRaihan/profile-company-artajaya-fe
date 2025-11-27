@@ -1,13 +1,60 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { persist } from 'zustand/middleware';
-import type {
-  TestimonialsState,
-  Testimonials,
-  CreateTestimonials,
-  ApiError,
-} from '@/types/index';
+import type { ApiError } from '@/types/index';
 import { testimoniAPI } from '@/services/testimoniAPI';
+// Testimonials Types
+export interface Testimonials {
+  id: string;
+  nama_tester: string;
+  testimoni: string;
+  isActive: boolean;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTestimonials {
+  testerName: string;
+  message: string;
+  createdBy: string;
+  isActive?: boolean;
+}
+
+export interface TestimonialsResponse {
+  success: boolean;
+  data: Testimonials[];
+  total: number;
+}
+
+export interface CreateTestimonialsResponse {
+  success: boolean;
+  message: string;
+  data: Testimonials;
+}
+
+// Testimonials State
+export interface TestimonialsState {
+  testimonials: Testimonials[];
+  loading: boolean;
+  error: string | null;
+  submitting: boolean;
+  submitSuccess: boolean;
+  total: number;
+}
+
+/** 
+ * *Create/Update Testimonials Types */ 
+ export interface UpdateTestimonialsDTO {
+   id: string; 
+   testerName?: string; 
+   message?: string; 
+   isActive?: boolean; 
+} 
+/** 
+ *End Create/Update Testimonials Types 
+ */
+
 
 interface TestimoniStore extends TestimonialsState {
   // Async Actions
