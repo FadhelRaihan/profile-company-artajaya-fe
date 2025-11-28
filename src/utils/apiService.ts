@@ -48,6 +48,12 @@ const mapStorage = {
   
   setItem: (name: string, value: any) => {
     try {
+      // ✅ Tambah defensive checks
+      if (!value || !value.state) {
+        console.warn('Invalid cache value:', value);
+        return;
+      }
+
       const state = {
         ...value.state,
         cache: value.state.cache instanceof Map 

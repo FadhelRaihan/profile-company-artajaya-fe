@@ -15,8 +15,8 @@ export interface Testimonials {
 }
 
 export interface CreateTestimonials {
-  testerName: string;
-  message: string;
+  nama_tester: string;
+  testimoni: string;
   createdBy: string;
   isActive?: boolean;
 }
@@ -122,12 +122,18 @@ export const useTestimoniStore = create<TestimoniStore>()(
 
         try {
           const response = await testimoniAPI.create(data);
+          if (!response.success) {
+            throw new Error(response.message || 'Failed to create testimonial');
+          }
           set((state) => {
             state.submitting = false;
             state.submitSuccess = true;
             state.error = null;
+
+            if (response.data) {
             state.testimonials.push(response.data);
             state.total = state.testimonials.length;
+            }
           });
         } catch (error) {
           const apiError = error as ApiError;
@@ -136,6 +142,7 @@ export const useTestimoniStore = create<TestimoniStore>()(
             state.error = apiError.message || 'Failed to create testimonial';
             state.submitSuccess = false;
           });
+          throw error;
         }
       },
 

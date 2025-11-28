@@ -4,15 +4,13 @@ import { MoveRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-import Loading from "@/components/loading"; 
-import { useProjectList, useProjectLoading, useProjectActions } from "@/stores";
+import { useProjectList, useProjectLoading } from "@/stores";
 import { getFirstProjectPhotoUrl, getProjectLocation, getProjectCategory } from "@/utils/projectsUtils";
 
 export default function CardProject() {
 
   const projects = useProjectList();
   const loading = useProjectLoading();
-  const { fetchActiveProjects } = useProjectActions();
 
   const [visibleCount, setVisibleCount] = useState(3);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -22,10 +20,6 @@ export default function CardProject() {
     triggerOnce: false,
   });
 
-  // ✅ Fetch data dari backend
-  useEffect(() => {
-    fetchActiveProjects();
-  }, [fetchActiveProjects]);
 
   // ✅ Transform data project
   const projectItems = useMemo(() => {
@@ -53,14 +47,11 @@ export default function CardProject() {
 
   const visibleProjects = projectItems.slice(0, visibleCount);
 
-  // ✅ Loading state
   if (loading) {
     return (
-      <Loading loadingDuration={800}>
-        <div className="text-center py-12">
+      <div className="flex justify-center items-center py-12">
           <p className="text-gray-600">Memuat kegiatan...</p>
-        </div>
-      </Loading>
+      </div>
     );
   }
 

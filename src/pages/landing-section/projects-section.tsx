@@ -1,21 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import SplitText from "@/components/split-text";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import { useProjectList, useProjectLoading, useProjectActions } from "@/stores";
+import { useProjectList } from "@/stores";
 import { getFirstProjectPhotoUrl, getProjectLocation, getProjectCategory } from "@/utils/projectsUtils";
 
 const ProjectKami: React.FC = () => {
   const projects = useProjectList();
-  const loading = useProjectLoading();
-  const { fetchActiveProjects } = useProjectActions();
 
-  useEffect(() => {
-    fetchActiveProjects();
-  }, [fetchActiveProjects]);
-
-  // Transform projects data untuk InfiniteMovingCards
   const projectItems = useMemo(() => {
     return projects.map((project) => ({
       id: project.id,
@@ -28,10 +21,8 @@ const ProjectKami: React.FC = () => {
 
   return (
     <div className="relative w-full min-h-screen flex flex-col py-20 md:py-24 lg:py-28">
-      {/* Container untuk text - dengan padding konsisten */}
       <div className="flex flex-col items-center justify-center px-6 md:px-12 lg:px-16 xl:px-20 mb-16 md:mb-20 lg:mb-12 pt-12">
         <div className="max-w-7xl w-full">
-          {/* Judul kecil */}
           <SplitText
             text="/Project Kami"
             className="text-2xl font-medium text-center text-blue-900"
@@ -46,7 +37,6 @@ const ProjectKami: React.FC = () => {
             textAlign="center"
           />
 
-          {/* Headline utama */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -65,7 +55,6 @@ const ProjectKami: React.FC = () => {
         </div>
       </div>
 
-      {/* Cards - full width */}
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -73,11 +62,8 @@ const ProjectKami: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
         className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
       >
-        {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900"></div>
-          </div>
-        ) : projectItems.length > 0 ? (
+        {/* Tampilkan cards atau pesan kosong, tanpa loading spinner */}
+        {projectItems.length > 0 ? (
           <InfiniteMovingCards
             items={projectItems}
             direction="left"

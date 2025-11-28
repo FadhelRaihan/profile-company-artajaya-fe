@@ -65,7 +65,7 @@ export const testimoniAPI = {
    * Backend: POST /api/v1/testimoni
    */
   create: async (data: CreateTestimonials): Promise<CreateTestimonialsResponse> => {
-    return api.post<CreateTestimonialsResponse>('/testimoni', data);
+    return api.post<CreateTestimonialsResponse>('/testimoni/guest', data);
   },
 
   /**

@@ -23,7 +23,7 @@ const SubDetailProject: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [ _, setIsTransitioning] = useState(false);
 
   // Get data from store
   const projects = useProjectList();
@@ -39,21 +39,6 @@ const SubDetailProject: React.FC = () => {
 
   // Find current project
   const project = projects.find((p) => p.id === projectId);
-
-  // Animation variants
-  const pageVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.5, ease: "easeOut" } 
-    },
-    exit: { 
-      opacity: 0, 
-      y: -40, 
-      transition: { duration: 0.4, ease: "easeIn" } 
-    },
-  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },

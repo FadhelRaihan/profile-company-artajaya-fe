@@ -9,7 +9,6 @@ const Kontak: React.FC = () => {
     email: "",
     pesan: ""
   });
-  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: "", message: ""});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +28,6 @@ const Kontak: React.FC = () => {
       return;
     }
 
-    setLoading(true);
     setStatus({ type: "", message: "" });
 
     try {
@@ -80,8 +78,6 @@ const Kontak: React.FC = () => {
         message: "Gagal mengirim pesan. Silakan coba lagi atau hubungi kami langsung."
       });
       console.error("Error:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -165,7 +161,6 @@ const Kontak: React.FC = () => {
                     name="nama"
                     value={formData.nama}
                     onChange={handleChange}
-                    disabled={loading}
                     className="w-full px-0 py-2 border-b border-gray-300 focus:outline-none focus:border-red-600 transition-colors text-gray-700 placeholder-gray-400 disabled:opacity-50"
                     placeholder="Nama"
                   />
@@ -178,7 +173,6 @@ const Kontak: React.FC = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    disabled={loading}
                     className="w-full px-0 py-2 border-b-2 border-gray-300 focus:outline-none focus:border-red-600 transition-colors text-gray-700 placeholder-gray-400 disabled:opacity-50"
                     placeholder="Email"
                   />
@@ -191,17 +185,15 @@ const Kontak: React.FC = () => {
                   id="pesan"
                   name="pesan"
                   value={formData.pesan}
-                  onChange={handleChange}
-                  disabled={loading}
+                  onChange={handleChange} 
                   className="flex-grow px-0 py-2 border-b-2 border-gray-300 focus:outline-none focus:border-red-600 transition-colors text-gray-700 placeholder-gray-400 disabled:opacity-50"
                   placeholder="Tuliskan pesan anda"
                 />
                 <button
                   onClick={handleSubmit}
-                  disabled={loading}
                   className="bg-red-600 text-white font-medium py-2 px-8 rounded hover:bg-red-700 transition-colors duration-300 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Mengirim..." : "Kirim"}
+                  Kirim
                 </button>
               </div>
             </div>
