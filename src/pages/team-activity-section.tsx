@@ -13,7 +13,7 @@ import {
   useKegiatanActions 
 } from "@/stores";
 import { errorHandling } from "@/utils/index";
-import type { Activities } from "@/types/index";
+import type { Activities } from "@/stores/kegiatan/kegiatanStore";
 
 // Helper function untuk fix dan validasi URL
 const fixPhotoUrl = (url: string | undefined, photoName: string | undefined, baseUrl: string): string => {

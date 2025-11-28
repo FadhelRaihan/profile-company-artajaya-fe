@@ -12,7 +12,7 @@ import {
 import Icon from '@/assets/icons/logo.png';
 import { useProjectList, useProjectActions } from '@/stores';
 import { getFirstProjectPhotoUrl } from '@/utils/projectsUtils';
-import type { Project } from '@/types';
+import type { Project } from '@/stores/projects/reportStore';
 
 // Remove Scroll indicator while navbar is open
 const handleNavClick = () => {
@@ -96,30 +96,24 @@ const Navbar = () => {
   }, [location]);
 
   // Fungsi untuk navigasi ke landing page dan scroll ke section
-  const navigateToSection = (sectionId: string) => {
-    closeMenu();
-    handleNavClick();
-    
-    // Cek apakah sudah di halaman landing
-    if (location.pathname === '/') {
-      // Jika sudah di landing, langsung scroll
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      // Jika belum di landing, navigasi ke landing tanpa hash dan scroll ke section
-      navigate(`/landing`);
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  };
+ const navigateToSection = (sectionId: string) => {
+  closeMenu();
+  handleNavClick();
+  
+  // Cek apakah sudah di halaman landing
+  if (location.pathname === '/') {
+    // Jika sudah di landing, langsung scroll
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  } else {
+    // Jika belum di landing, navigasi dengan hash
+    navigate(`/#${sectionId}`);
+  }
+};
 
   // Truncate description to max 100 characters
   const truncateText = (text: string, maxLength: number = 100): string => {

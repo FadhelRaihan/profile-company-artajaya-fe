@@ -4,7 +4,7 @@ import SplitText from "@/components/split-text";
 import ExpandedCard from "@/components/expanded-card";
 import { useEffect } from "react";
 import { useEmployeeActions, useEmployeeError, useEmployeeList, useEmployeeLoading } from "@/stores";
-import { getImageUrl } from "@/utils/apiService";
+import { getImageUrl } from "@/utils/getImageUrl";
 import React from "react";
 
 const TimKami: React.FC = () => {

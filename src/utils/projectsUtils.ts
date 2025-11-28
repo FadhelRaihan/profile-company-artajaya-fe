@@ -1,5 +1,5 @@
-import type { Project, ProjectPhoto } from '@/types/index';
-import { getImageUrl } from '@/utils/apiService';
+import type { Project, ProjectPhoto } from '@/stores/projects/reportStore';
+import { getImageUrl } from '@/utils/getImageUrl';
 
 
 /**
