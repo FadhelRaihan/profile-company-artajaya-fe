@@ -1,9 +1,10 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { Progress } from "@/components/ui/progress";
 
-interface Loading {
+interface LoadingProps {
   children: ReactNode;
   loadingDuration?: number;
+  isDataReady?: boolean; // Tambahan prop untuk check data ready
 }
 
 // Komponen Loading Screen Internal
@@ -29,10 +30,8 @@ const LoadingScreen = ({ progress }: { progress: number }) => {
 const Loading = ({
   children,
   loadingDuration = 2000,
-}: {
-  children: React.ReactNode;
-  loadingDuration?: number;
-}) => {
+  isDataReady = true, // Default true jika tidak ada data fetching
+}: LoadingProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
@@ -45,7 +44,8 @@ const Loading = ({
     const timer = setInterval(() => {
       currentProgress += increment;
 
-      if (currentProgress >= 100) {
+      // Loading selesai jika progress 100% DAN data sudah ready
+      if (currentProgress >= 100 && isDataReady) {
         setProgress(100);
         clearInterval(timer);
         // Delay sedikit sebelum menampilkan konten
@@ -53,12 +53,13 @@ const Loading = ({
           setIsLoading(false);
         }, 200);
       } else {
-        setProgress(currentProgress);
+        // Max 90% jika data belum ready, untuk menghindari loading selesai terlalu cepat
+        setProgress(Math.min(currentProgress, isDataReady ? 100 : 90));
       }
     }, interval);
 
     return () => clearInterval(timer);
-  }, [loadingDuration]);
+  }, [loadingDuration, isDataReady]);
 
   // Jika masih loading, tampilkan loading screen
   if (isLoading) {

@@ -1,5 +1,5 @@
 import { api } from "@/utils/apiService"
-import type { EmployeeMemberResponse } from "@/types"
+import type { EmployeeMemberResponse } from "@/stores/team/employeeStore"
 
 /** 
  * Employee API Service

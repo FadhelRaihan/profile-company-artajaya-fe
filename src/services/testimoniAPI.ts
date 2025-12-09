@@ -4,7 +4,7 @@ import type {
   CreateTestimonialsResponse,
   CreateTestimonials,
   UpdateTestimonialsDTO
-} from '@/types/index';
+} from '@/stores/testimoni/testimoniStore';
 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
@@ -65,7 +65,7 @@ export const testimoniAPI = {
    * Backend: POST /api/v1/testimoni
    */
   create: async (data: CreateTestimonials): Promise<CreateTestimonialsResponse> => {
-    return api.post<CreateTestimonialsResponse>('/testimoni', data);
+    return api.post<CreateTestimonialsResponse>('/testimoni/guest', data);
   },
 
   /**

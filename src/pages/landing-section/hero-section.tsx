@@ -1,4 +1,3 @@
-
 import { motion, useInView } from "framer-motion";
 import SplitText from "@/components/split-text";
 import React from "react";

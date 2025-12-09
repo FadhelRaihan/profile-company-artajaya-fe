@@ -180,6 +180,8 @@ section {
 
 .animate-scroll > li {
   pointer-events: auto;
+  animation: scroll var(--animation-duration, 60s)
+  var(--animation-direction, forwards) linear infinite;
 }
 /* Scale-up efek smooth */
 .animate-scroll > li:hover {

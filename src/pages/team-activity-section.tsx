@@ -13,7 +13,7 @@ import {
   useKegiatanActions 
 } from "@/stores";
 import { errorHandling } from "@/utils/index";
-import type { Activities } from "@/types/index";
+import type { Activities } from "@/stores/kegiatan/kegiatanStore";
 
 // Helper function untuk fix dan validasi URL
 const fixPhotoUrl = (url: string | undefined, photoName: string | undefined, baseUrl: string): string => {
@@ -348,16 +348,17 @@ const TeamActivitySection = () => {
               </div>
             </div>
             <ThreeDImageRing
-              images={ourTeamImage}
-              containerClassName="overflow-visible relative"
-              imageDistance={800}
-              width={300}
-              animationDuration={2}
-              hoverOpacity={1}
-              perspective={1400}
-              imageClassName="w-full h-full object-cover shadow-lg hover:scale-105 transition-transform duration-300"
-              gapOffset={0}
-            /> 
+            images={ourTeamImage}
+            containerClassName="overflow-visible relative"
+            imageDistance={600}  // Jarak lebih dekat
+            width={280}          // Lebar card
+            height={360}         // Tinggi card
+            perspective={1200}
+            animationDuration={2}
+            hoverOpacity={0.6}
+            imageClassName="rounded-2xl"
+            gapOffset={0}
+          />
           </motion.div>
 
           {/* Activities Section */}

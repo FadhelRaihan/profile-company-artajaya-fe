@@ -1,8 +1,49 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { persist } from 'zustand/middleware';
-import type { EmployeeState, EmployeeMember, ApiError } from '@/types';
+import type { ApiError } from '@/types';
 import { employeeAPI } from '@/services/employeeAPI';
+
+// Employee Types
+export interface EmployeeMember {
+  id: string;
+  full_name: string;
+  phoneNumber: string;
+  email: string;
+  joinDate: string;
+  positionId: string;
+  photo_url: string;
+  position?: Position;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EmployeeMemberResponse {
+  success: boolean;
+  data: EmployeeMember[];
+  total: number;
+}
+
+export interface Position {
+  id: string;
+  name: string;
+  sort_order: number;
+  is_active: boolean;
+  created_by: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Employee State
+export interface EmployeeState {
+  employees: EmployeeMember[];
+  loading: boolean;
+  error: string | null;
+  total: number;
+  positions: string[];
+}
+
 
 /**
  * Helper untuk ekstrak posisi unik dengan type-safety

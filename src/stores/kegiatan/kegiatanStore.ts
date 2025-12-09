@@ -1,8 +1,72 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { persist } from 'zustand/middleware';
-import type { ActivitiesState, ApiError } from '@/types/index';
+import type { ApiError } from '@/types/index';
 import { kegiatanAPI } from '@/services/kegiatanAPI';
+
+// Activities Types
+export interface ActivitiesPhotos {
+  kegiatanId: string;
+  id_kegiatan: string;
+  photo_name: string;
+  url: string;
+}
+
+export interface Activities {
+  kegiatanId: string;
+  nama_kegiatan: string;
+  deskripsi_singkat: string;
+  lokasi_kegiatan: string;
+  tanggal_kegiatan: string;
+  is_active: boolean;
+  created_by: string;
+  createdAt: string;
+  updatedAt: string;
+  photos?: ActivitiesPhotos[];
+}
+
+export interface ActivitiesResponse {
+  success: boolean;
+  message: string;
+  data: Activities[];
+  total?: number;
+  page?: number;
+  limit?: number;
+  timestamp: string;
+}
+
+export interface ActivitiesDetailResponse {
+  success: boolean;
+  message: string;
+  data: Activities;
+  timestamp: string;
+}
+
+// Activities State
+export interface ActivitiesState {
+  kegiatan: Activities[];
+  selectedKegiatan: Activities | null;
+  loading: boolean;
+  error: string | null;
+  total: number;
+  page: number;
+  limit: number;
+}
+/**
+*Activities Filters
+*/
+export interface ActivitiesFilters {
+  is_active?: boolean;
+  search?: string;
+  page?: number;
+  limit?: number;
+  sort_by?: 'tanggal_kegiatan' | 'createdAt' | 'nama_kegiatan';
+}
+/**
+*Activities Filters
+*/
+
+
 
 interface KegiatanStore extends ActivitiesState {
   // Actions

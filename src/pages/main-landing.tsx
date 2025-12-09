@@ -12,12 +12,12 @@ import Kontak from "./landing-section/contact-section";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { useProjectActions, useEmployeeActions, useTestimoniActions } from "@/stores";
 
 // ===================== ScrollIndicator =====================
 const ScrollIndicator = () => {
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,7 +26,6 @@ const ScrollIndicator = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Hide indicator when scrolled past first section
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -57,12 +56,11 @@ const ScrollIndicator = () => {
   );
 };
 
-// ===================== LandingPage =====================
-const Landing: React.FC = () => {
+// ===================== Konten Landing =====================
+const LandingContent: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const location = useLocation();
 
-  //Auto Scroll to spesific section
   useEffect(() => {
     if (location.state?.scrollTo) {
       const targetId = location.state.scrollTo;
@@ -76,7 +74,6 @@ const Landing: React.FC = () => {
         return false;
       };
 
-      // coba scroll segera, kalau belum ada elemen, tunggu render selesai
       if (!scrollToSection()) {
         const interval = setInterval(() => {
           if (scrollToSection()) {
@@ -86,17 +83,15 @@ const Landing: React.FC = () => {
         setTimeout(() => clearInterval(interval), 5000);
       }
 
-      // hapus state agar tidak auto-scroll lagi setelah navigasi pertama
       window.history.replaceState({}, document.title);
     }
   }, [location]);
 
   useEffect(() => {
-    // Aktifkan scroll snap secara global
     document.documentElement.style.scrollSnapType = "y mandatory";
 
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 600); // muncul setelah scroll agak jauh
+      setShowScrollTop(window.scrollY > 600);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -104,7 +99,7 @@ const Landing: React.FC = () => {
   }, []);
 
   return (
-    <Loading loadingDuration={1000}>
+    <>
       <Navbar />
       <ScrollIndicator />
 
@@ -137,7 +132,7 @@ const Landing: React.FC = () => {
         <Kontak />
       </ParallaxPage>
 
-      {/* ================= Scroll to Top Button ================= */}
+      {/* Scroll to Top Button */}
       <AnimatePresence>
         {showScrollTop && (
           <motion.div
@@ -158,6 +153,42 @@ const Landing: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+    </>
+  );
+};
+
+// ===================== LandingPage dengan Data Loading =====================
+const Landing: React.FC = () => {
+  const [isDataReady, setIsDataReady] = useState(false);
+
+  // Fetch actions for all data
+  const { fetchActiveProjects } = useProjectActions();
+  const { fetchAllEmployee } = useEmployeeActions();
+  const { fetchActiveTestimoni } = useTestimoniActions();
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        // Fetch all data concurrently
+        await Promise.all([
+          fetchActiveProjects(),
+          fetchAllEmployee(),
+          fetchActiveTestimoni(),
+        ]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        // Data ready, so stop loading
+        setIsDataReady(true);
+      }
+    };
+
+    fetchAllData();
+  }, [fetchActiveProjects, fetchAllEmployee, fetchActiveTestimoni]);
+
+  return (
+    <Loading loadingDuration={1500} isDataReady={isDataReady}>
+      <LandingContent />
     </Loading>
   );
 };

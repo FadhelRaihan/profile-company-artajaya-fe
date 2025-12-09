@@ -69,7 +69,7 @@ import {
 const routes = [
   {path: '/', name: "Landing", element: Landing},
   {path: "/project", name: "Project", element: Project},
-  {path: "/sub-detail-project", name:"Sub-Detail Project", element: SubDetailProject},
+  {path: "/project/:projectId", name:"Sub-Detail Project", element: SubDetailProject},
   {path: "/project-pages", name: "Project Pages", element: ProjectPages},
   {path: "/testimoni-form", name:"Testimoni Form", element: TestimoniForm},
   {path: "/team-activity-section", name: "Team Activity Section", element: TeamActivitySection},
