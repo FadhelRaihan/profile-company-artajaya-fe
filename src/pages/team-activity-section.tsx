@@ -222,10 +222,10 @@ const TeamActivitySection = () => {
                     }}
                   />
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#003399]/90 via-[#003399]/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-t from-[#003399]/90 via-[#003399]/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
                   
                   {/* Content Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform transition-transform duration-300 group-hover:translate-y-[-8px]">
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform transition-transform duration-300 group-hover:-translate-y-2">
                     <h3 className="font-bold text-xl mb-2 line-clamp-2 drop-shadow-lg">
                       {activity.nama_kegiatan}
                     </h3>
@@ -278,7 +278,7 @@ const TeamActivitySection = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white">
+      <div className="flex items-center justify-center min-h-screen brbg-linear-to-br from-blue-50 to-white">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-900 border-t-transparent mb-4"></div>
           <p className="text-blue-900 text-xl font-semibold">Memuat Kegiatan...</p>
@@ -301,7 +301,7 @@ const TeamActivitySection = () => {
               <div className="flex items-center gap-3 mb-4 justify-center lg:justify-start">
                 <button
                   onClick={() => window.history.back()}
-                  className="flex-shrink-0 p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer -translate-y-2 ml-[-12px] md:ml-0 md:-translate-y-3"
+                  className="shrink-0 p-2 rounded-xl hover:bg-gray-100/60 transition-colors cursor-pointer -translate-y-2 -ml-3 md:ml-0 md:-translate-y-3"
                   aria-label="Kembali ke halaman sebelumnya"
                 >
                   <ArrowLeft className="text-[#00297A] size-6 md:size-7 lg:size-8" />

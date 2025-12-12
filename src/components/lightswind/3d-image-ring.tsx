@@ -77,28 +77,28 @@ export function ThreeDImageRing({
     return effectiveAngle / images.length;
   }, [images.length, gapOffset]);
 
-  const getBgPos = (imageIndex: number, currentRot: number, scale: number) => {
-    const scaledImageDistance = imageDistance * scale;
-    const effectiveRotation = currentRot - 180 - imageIndex * angle;
-    const parallaxOffset = ((effectiveRotation % 360 + 360) % 360) / 360;
-    return `${-(parallaxOffset * (scaledImageDistance / 2))}px 0px`; // Dikurangi dari 1.5 ke 2
-  };
+  // const getBgPos = (imageIndex: number, currentRot: number, scale: number) => {
+  //   const scaledImageDistance = imageDistance * scale;
+  //   const effectiveRotation = currentRot - 180 - imageIndex * angle;
+  //   const parallaxOffset = ((effectiveRotation % 360 + 360) % 360) / 360;
+  //   return `${-(parallaxOffset * (scaledImageDistance / 2))}px 0px`; // Dikurangi dari 1.5 ke 2
+  // };
 
-  useEffect(() => {
-    const unsubscribe = rotationY.on("change", (latestRotation) => {
-      if (ringRef.current) {
-        Array.from(ringRef.current.children).forEach((imgElement, i) => {
-          (imgElement as HTMLElement).style.backgroundPosition = getBgPos(
-            i,
-            latestRotation,
-            currentScale
-          );
-        });
-      }
-      currentRotationY.current = latestRotation;
-    });
-    return () => unsubscribe();
-  }, [rotationY, images.length, imageDistance, currentScale, angle]);
+  // useEffect(() => {
+  //   const unsubscribe = rotationY.on("change", (latestRotation) => {
+  //     if (ringRef.current) {
+  //       Array.from(ringRef.current.children).forEach((imgElement, i) => {
+  //         (imgElement as HTMLElement).style.backgroundPosition = getBgPos(
+  //           i,
+  //           latestRotation,
+  //           currentScale
+  //         );
+  //       });
+  //     }
+  //     currentRotationY.current = latestRotation;
+  //   });
+  //   return () => unsubscribe();
+  // }, [rotationY, images.length, imageDistance, currentScale, angle]);
 
   useEffect(() => {
     const handleResize = () => {
