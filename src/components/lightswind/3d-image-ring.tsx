@@ -241,16 +241,19 @@ export function ThreeDImageRing({
                     key={index}
                     className={cn("w-full h-full absolute rounded-2xl overflow-hidden", imageClassName)}
                     style={{
-                      transformStyle: "preserve-3d",
-                      backgroundImage: imageUrl ? `url(${imageUrl})` : "none",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center center", // Diubah untuk center foto
-                      backgroundRepeat: "no-repeat",
-                      backfaceVisibility: "hidden",
-                      rotateY: index * -angle,
-                      z: -imageDistance * currentScale,
-                      transformOrigin: `50% 50% ${imageDistance * currentScale}px`,
-                      boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+                    transformStyle: "preserve-3d",
+                    backgroundImage: imageUrl ? `url(${imageUrl.trim()})` : "none",
+                    backgroundSize: "cover",        // ✅ Tetap cover → fill penuh
+                    backgroundPosition: "center 40%", // ✅ Pusat horizontal, 40% dari atas (lebih aman)
+                    backgroundRepeat: "no-repeat",
+                    backfaceVisibility: "hidden",
+                    rotateY: index * -angle,
+                    z: -imageDistance * currentScale,
+                    transformOrigin: `50% 50% ${imageDistance * currentScale}px`,
+                    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+                    // // ✅ Pastikan ukuran elemen = 700x550
+                    // width: "600px",
+                    // height: "550px",
                     }}
                     initial="hidden"
                     animate="visible"

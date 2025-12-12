@@ -349,10 +349,10 @@ const TeamActivitySection = () => {
             </div>
             <ThreeDImageRing
             images={ourTeamImage}
-            containerClassName="overflow-visible relative"
-            imageDistance={600}  // Jarak lebih dekat
-            width={280}          // Lebar card
-            height={360}         // Tinggi card
+            containerClassName="overflow-hidden relative w-full 2xl:h-[800px] absolute top-[250px] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            imageDistance={650}  // Jarak lebih dekat
+            width={700}          // Lebar card
+            height={500}         // Tinggi card
             perspective={1200}
             animationDuration={2}
             hoverOpacity={0.6}
@@ -364,7 +364,7 @@ const TeamActivitySection = () => {
           {/* Activities Section */}
           <motion.div
             style={{ y: activitiesY }}
-            className="relative w-full flex flex-col items-center overflow-hidden py-12 md:py-2 pl-8"
+            className="absolute top-[700px] w-full flex flex-col items-center overflow-hidden py-12 md:py-2 pl-8"
           >
             <div className="flex flex-col items-end justify-start px-4 md:px-24 mb-8 md:mb-12 max-w-7xl w-full">
               <div className="w-full space-y-4">
