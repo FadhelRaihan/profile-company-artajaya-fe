@@ -163,7 +163,7 @@ const Landing: React.FC = () => {
 
   // Fetch actions for all data
   const { fetchActiveProjects } = useProjectActions();
-  const { fetchAllEmployee } = useEmployeeActions();
+  const { fetchActiveEmployee } = useEmployeeActions();
   const { fetchActiveTestimoni } = useTestimoniActions();
 
   useEffect(() => {
@@ -172,7 +172,7 @@ const Landing: React.FC = () => {
         // Fetch all data concurrently
         await Promise.all([
           fetchActiveProjects(),
-          fetchAllEmployee(),
+          fetchActiveEmployee(),
           fetchActiveTestimoni(),
         ]);
       } catch (error) {
@@ -184,7 +184,7 @@ const Landing: React.FC = () => {
     };
 
     fetchAllData();
-  }, [fetchActiveProjects, fetchAllEmployee, fetchActiveTestimoni]);
+  }, [fetchActiveProjects, fetchActiveEmployee, fetchActiveTestimoni]);
 
   return (
     <Loading loadingDuration={1500} isDataReady={isDataReady}>

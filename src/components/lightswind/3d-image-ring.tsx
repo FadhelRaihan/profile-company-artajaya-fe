@@ -250,7 +250,6 @@ export function ThreeDImageRing({
                       rotateY: index * -angle,
                       z: -imageDistance * currentScale,
                       transformOrigin: `50% 50% ${imageDistance * currentScale}px`,
-                      boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
                     }}
                     initial="hidden"
                     animate="visible"

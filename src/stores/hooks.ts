@@ -122,14 +122,10 @@ export const useEmployeeTotal = () =>
 
 export const useEmployeeActions = () =>
   useEmployeeStore(useShallow((state) => ({
-    fetchAllEmployee: state.fetchAllEmployee,
     fetchActiveEmployee: state.fetchActiveEmployee,
-    fetchInactiveEmployee: state.fetchInactiveEmployee,
-    fetchEmployeeById: state.fetchEmployeeById,
     clearError: state.clearError,
     clearEmployees: state.clearEmployees,
     filterByPosition: state.filterByPosition,
-    searchEmployee: state.searchEmployee,
   })));
 
 // Full hook for components that need everything
