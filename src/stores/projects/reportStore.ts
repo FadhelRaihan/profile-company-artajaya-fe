@@ -59,7 +59,6 @@ export interface ProjectState {
 }
 
 
-
 interface ProjectActions {
     fetchActiveProjects: () => Promise<void>;
     clearError: () => void;

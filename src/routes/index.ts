@@ -59,7 +59,7 @@ import {
     SubDetailProject,
     ProjectPages,
 
-    TestimoniForm,
+    // TestimoniForm,
 
     TeamActivitySection,
 
@@ -71,7 +71,7 @@ const routes = [
   {path: "/project", name: "Project", element: Project},
   {path: "/project/:projectId", name:"Sub-Detail Project", element: SubDetailProject},
   {path: "/project-pages", name: "Project Pages", element: ProjectPages},
-  {path: "/testimoni-form", name:"Testimoni Form", element: TestimoniForm},
+  // {path: "/testimoni-form", name:"Testimoni Form", element: TestimoniForm},
   {path: "/team-activity-section", name: "Team Activity Section", element: TeamActivitySection},
   {path: "*", name: "404 Page", element: Page404},
 ];
