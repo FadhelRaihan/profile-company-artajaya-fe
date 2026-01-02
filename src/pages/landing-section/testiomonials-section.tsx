@@ -111,7 +111,7 @@ const Testimoni: React.FC = () => {
         ref={ref}
         className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden py-20 md:py-24 lg:py-28"
       >
-        <div className="flex flex-col items-start justify-center px-6 md:px-12 lg:px-16 xl:px-20 mb-2 max-w-7xl w-full pt-8">
+        <div className="flex flex-col items-start justify-center px-6 md:px-12 lg:px-16 xl:px-20 mb-2 max-w-7xl w-full pt-8 mt-20 md:mt-24 lg:mt-32">
           <div className="w-full space-y-2">
             <SplitText
               key={isInview ? "visible" : "hidden"}
@@ -171,7 +171,8 @@ const Testimoni: React.FC = () => {
                 <TestimonialInfiniteCards
                   items={transformedTestimonials}
                   direction="left"
-                  speed="normal"
+                  speed="slow"
+                  customDuration={30} 
                   pauseOnHover={true}
                 />
               ) : (

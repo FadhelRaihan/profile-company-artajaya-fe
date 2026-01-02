@@ -116,24 +116,24 @@ const Kontak: React.FC = () => {
           {/* Informasi Kontak */}
           <div className="flex flex-col space-y-6 lg:w-1/2">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-600 rounded-md flex items-center justify-center">
-                <Mail className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 bg-red-600 rounded-md flex items-center justify-center">
+                <Mail className="w-6 h-6 text-white" />
               </div>
-              <p className="text-blue-900 font-medium">example@gmail.com</p>
+              <p className="text-blue-900 font-medium">artajaya@gmail.com</p>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-600 rounded-md flex items-center justify-center">
-                <Phone className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 bg-red-600 rounded-md flex items-center justify-center">
+                <Phone className="w-6 h-6 text-white" />
               </div>
               <p className="text-blue-900 font-medium">(+62) 878902790123</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-600 rounded-md flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-white" />
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 bg-red-600 rounded-md flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-6 h-6 text-white" />
               </div>
-              <p className="text-blue-900 font-medium">Jl. Bandung 119</p>
+              <p className="text-blue-900 font-medium">Pasir Impun Atas 49, Kp. Cikaso Pasir Impun Atas No.RT 01/09, Cikadut, Kec. Cimenyan, Kabupaten Bandung, Jawa Barat 40191</p>
             </div>
           </div>
 
@@ -203,7 +203,7 @@ const Kontak: React.FC = () => {
         {/* Google Maps Section - Full Width */}
         <div className="-mx-[calc((100vw-100%)/2)] w-screen mt-10 lg:mt-8">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56347862248!2d107.57311651640625!3d-6.903444400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1234567890123!5m2!1sen!2sid"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63372.162195760335!2d107.6622625528917!3d-6.919253378486087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68dd0074780bab%3A0x6ce24994181fe010!2sARTAJAYA%20KONSTRUKSI!5e0!3m2!1sen!2sid!4v1767296140696!5m2!1sen!2sid"
             width="100%"
             height="270"
             style={{ border: 0 }}
